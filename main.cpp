@@ -83,115 +83,115 @@ void prepareScreen(){
 	 	printf( "Error! Screen FrameBuffer is not complete");
 	 }
 
-    glBindFramebuffer(GL_FRAMEBUFFER, 0);
-	
-}
+	 glBindFramebuffer(GL_FRAMEBUFFER, 0);
+	 
+	}
 
 //Prepares the shadow FBO
-void prepareShadow(){
-	glGenFramebuffers(1, &shadowFBO);
+	void prepareShadow(){
+		glGenFramebuffers(1, &shadowFBO);
 
-	glBindTexture(GL_TEXTURE_2D, 0);
-	glGenTextures(1, &shadowTexture);
+		glBindTexture(GL_TEXTURE_2D, 0);
+		glGenTextures(1, &shadowTexture);
 
-	glBindTexture(GL_TEXTURE_2D, shadowTexture);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT24, WINDOWX, WINDOWY, 0, GL_DEPTH_COMPONENT, GL_FLOAT, NULL);
-    glBindTexture(GL_TEXTURE_2D, 0);
+		glBindTexture(GL_TEXTURE_2D, shadowTexture);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+		glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT24, WINDOWX, WINDOWY, 0, GL_DEPTH_COMPONENT, GL_FLOAT, NULL);
+		glBindTexture(GL_TEXTURE_2D, 0);
 
-    glBindFramebuffer(GL_FRAMEBUFFER, shadowFBO);
-	glFramebufferTexture(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, shadowTexture, 0);
-	glDrawBuffer(GL_NONE);
-	glReadBuffer(GL_NONE);
+		glBindFramebuffer(GL_FRAMEBUFFER, shadowFBO);
+		glFramebufferTexture(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, shadowTexture, 0);
+		glDrawBuffer(GL_NONE);
+		glReadBuffer(GL_NONE);
 	 if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE){  //Check for FBO completeness
 	 	printf( "Error! Shadow FrameBuffer is not complete");
 	 }
-    glBindFramebuffer(GL_FRAMEBUFFER, 0);
-}
+	 glBindFramebuffer(GL_FRAMEBUFFER, 0);
+	}
 
 //Prepares the shader.
-void prepareShaders(){
-	shaderProgram1 = glCreateProgram();
+	void prepareShaders(){
+		shaderProgram1 = glCreateProgram();
 
 	//Load vertex shader
-    GLuint vertexShader = loadShaderFromFile( "shaders/testshader.vert", GL_VERTEX_SHADER );
+		GLuint vertexShader = loadShaderFromFile( "shaders/testshader.vert", GL_VERTEX_SHADER );
 
     //Attach vertex shader to program
-    glAttachShader( shaderProgram1, vertexShader );
+		glAttachShader( shaderProgram1, vertexShader );
 
 
     //Create fragment shader
-    GLuint fragmentShader = loadShaderFromFile( "shaders/testshader.frag", GL_FRAGMENT_SHADER );
+		GLuint fragmentShader = loadShaderFromFile( "shaders/testshader.frag", GL_FRAGMENT_SHADER );
 
     //Attach fragment shader to program
-    glAttachShader( shaderProgram1, fragmentShader );
+		glAttachShader( shaderProgram1, fragmentShader );
 
     //Link program
-    glLinkProgram( shaderProgram1 );
+		glLinkProgram( shaderProgram1 );
 
 
-    if( glIsShader( vertexShader ) || true )
-	{
+		if( glIsShader( vertexShader ) || true )
+		{
 		//Shader log length
-		int infoLogLength = 0;
-		int maxLength = infoLogLength;
+			int infoLogLength = 0;
+			int maxLength = infoLogLength;
 
 		//Get info string length
-		glGetShaderiv( vertexShader, GL_INFO_LOG_LENGTH, &maxLength );
+			glGetShaderiv( vertexShader, GL_INFO_LOG_LENGTH, &maxLength );
 
 		//Allocate string
-		char* infoLog = new char[ maxLength ];
+			char* infoLog = new char[ maxLength ];
 
 		//Get info log
-		glGetShaderInfoLog( vertexShader, maxLength, &infoLogLength, infoLog );
-		if( infoLogLength > 0 )
-		{
+			glGetShaderInfoLog( vertexShader, maxLength, &infoLogLength, infoLog );
+			if( infoLogLength > 0 )
+			{
 			//Print Log
-			printf( "%s\n", infoLog );
-		}
+				printf( "%s\n", infoLog );
+			}
 
 		//Deallocate string
-		delete[] infoLog;
-	}
-	else
-	{
-		printf( "Name %d is not a shader\n", vertexShader );
-	}
+			delete[] infoLog;
+		}
+		else
+		{
+			printf( "Name %d is not a shader\n", vertexShader );
+		}
 
 
     //Get uniforms
-    mvMatrixLoc = glGetUniformLocation(shaderProgram1, "mvMatrix");
-    pMatrixLoc = glGetUniformLocation(shaderProgram1, "pMatrix");
-    timeLoc = glGetUniformLocation(shaderProgram1, "time");
-}
+		mvMatrixLoc = glGetUniformLocation(shaderProgram1, "mvMatrix");
+		pMatrixLoc = glGetUniformLocation(shaderProgram1, "pMatrix");
+		timeLoc = glGetUniformLocation(shaderProgram1, "time");
+	}
 
 
 //GLUT keyboard functions
-void keyboard(unsigned char key, int xIn, int yIn)
-{
-	switch (key)
+	void keyboard(unsigned char key, int xIn, int yIn)
 	{
-		case 'q':
+		switch (key)
+		{
+			case 'q':
 		case 27:	//27 is the esc key
-			exit(0);
-			break;
+		exit(0);
+		break;
 		case 'd':
-			break;
+		break;
 		case 'j':
-			yaw += 0.1;
-			break;
+		yaw += 0.1;
+		break;
 		case 'l':
-			yaw -= 0.1;
-			break;
+		yaw -= 0.1;
+		break;
 		case 'i':
-			pitch += 0.1;
-			break;
+		pitch += 0.1;
+		break;
 		case 'k':
-			pitch -= 0.1;
-			break;
+		pitch -= 0.1;
+		break;
 	}
 }
 
@@ -220,9 +220,9 @@ void prepareDisplay(void){
 void updateMatrices(){
 	glGetFloatv(GL_PROJECTION_MATRIX, projectionMatrix);
 	glGetFloatv(GL_MODELVIEW_MATRIX, modelViewMatrix);  
-    glUniformMatrix4fv(mvMatrixLoc,  1, GL_FALSE, modelViewMatrix);
-    glUniformMatrix4fv(pMatrixLoc,  1, GL_FALSE, projectionMatrix);
-    glUniform1f(timeLoc, timePassed);
+	glUniformMatrix4fv(mvMatrixLoc,  1, GL_FALSE, modelViewMatrix);
+	glUniformMatrix4fv(pMatrixLoc,  1, GL_FALSE, projectionMatrix);
+	glUniform1f(timeLoc, timePassed);
 }
 
 //Renders the scene
@@ -324,7 +324,7 @@ void FPSUpdate(int i){
 
 
 void resizeFunc(int x, int y){
-    glutReshapeWindow( WINDOWX, WINDOWY);
+	glutReshapeWindow( WINDOWX, WINDOWY);
 }
 
 /* main function - program entry point */
@@ -341,7 +341,7 @@ int main(int argc, char** argv)
 	if (GLEW_OK != err)
 	{
 	  /* Problem: glewInit failed, something is seriously wrong. */
-	  fprintf(stderr, "Error: %s\n", glewGetErrorString(err));
+		fprintf(stderr, "Error: %s\n", glewGetErrorString(err));
 	}
 	fprintf(stdout, "Status: Using GLEW %s\n", glewGetString(GLEW_VERSION));
 
@@ -358,7 +358,7 @@ int main(int argc, char** argv)
 	init();
 
 	glEnable(GL_DEPTH_TEST);
-    glClearColor(0,0,0,0);
+	glClearColor(0,0,0,0);
 
 
 	glutMainLoop();				//starts the event glutMainLoop
