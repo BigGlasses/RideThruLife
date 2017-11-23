@@ -15,7 +15,7 @@ const int RENDERMODE_SOLID = 0;
 const int RENDERMODE_WIREFRAME = 1;
 const int RENDERMODE_SOLIDWIREFAME = 2;
 float camPos[] = {0, 0, 3.42f};	//where the camera is
-float lightPos[] = {10, 10, 10};
+float lightPos[] = {5, 5, 5};
 
 
 //Window size
@@ -37,12 +37,25 @@ GLuint shadowTexture;
 GLuint shadowFBO;
 
 GLuint shaderProgram1;
+GLuint shaderProgram2;
 
 GLuint mvMatrixLoc;
 GLuint pMatrixLoc;
+GLuint mvMatrixShadowLoc;
+GLuint pMatrixShadowLoc;
+GLuint mvMatrixLightLoc;
+GLuint pMatrixLightLoc;
 GLuint timeLoc;
 GLfloat  modelViewMatrix[16]; 
 GLfloat  projectionMatrix[16]; 
+GLfloat  modelViewLightMatrix[16]; 
+GLfloat  projectionLightMatrix[16]; 
+GLfloat  biasMatrix[16] = {
+0.5, 0.0, 0.0, 0.0,
+0.0, 0.5, 0.0, 0.0,
+0.0, 0.0, 0.5, 0.0,
+0.5, 0.5, 0.5, 1.0}
+; 
 
 
 
@@ -115,57 +128,30 @@ void prepareScreen(){
 //Prepares the shader.
 	void prepareShaders(){
 		shaderProgram1 = glCreateProgram();
-
-	//Load vertex shader
 		GLuint vertexShader = loadShaderFromFile( "shaders/testshader.vert", GL_VERTEX_SHADER );
-
-    //Attach vertex shader to program
 		glAttachShader( shaderProgram1, vertexShader );
-
-
-    //Create fragment shader
 		GLuint fragmentShader = loadShaderFromFile( "shaders/testshader.frag", GL_FRAGMENT_SHADER );
-
-    //Attach fragment shader to program
 		glAttachShader( shaderProgram1, fragmentShader );
-
-    //Link program
 		glLinkProgram( shaderProgram1 );
 
+		shaderProgram2 = glCreateProgram();
+		vertexShader = loadShaderFromFile( "shaders/shadowShader.vert", GL_VERTEX_SHADER );
+		glAttachShader( shaderProgram2, vertexShader );
+		fragmentShader = loadShaderFromFile( "shaders/shadowShader.frag", GL_FRAGMENT_SHADER );
+		glAttachShader( shaderProgram2, fragmentShader );
+		glLinkProgram( shaderProgram2 );
 
-		if( glIsShader( vertexShader ) || true )
-		{
-		//Shader log length
-			int infoLogLength = 0;
-			int maxLength = infoLogLength;
-
-		//Get info string length
-			glGetShaderiv( vertexShader, GL_INFO_LOG_LENGTH, &maxLength );
-
-		//Allocate string
-			char* infoLog = new char[ maxLength ];
-
-		//Get info log
-			glGetShaderInfoLog( vertexShader, maxLength, &infoLogLength, infoLog );
-			if( infoLogLength > 0 )
-			{
-			//Print Log
-				printf( "%s\n", infoLog );
-			}
-
-		//Deallocate string
-			delete[] infoLog;
-		}
-		else
-		{
-			printf( "Name %d is not a shader\n", vertexShader );
-		}
 
 
     //Get uniforms
 		mvMatrixLoc = glGetUniformLocation(shaderProgram1, "mvMatrix");
 		pMatrixLoc = glGetUniformLocation(shaderProgram1, "pMatrix");
 		timeLoc = glGetUniformLocation(shaderProgram1, "time");
+		mvMatrixShadowLoc = glGetUniformLocation(shaderProgram2, "mvMatrix");
+		pMatrixShadowLoc = glGetUniformLocation(shaderProgram2, "pMatrix");
+		mvMatrixLightLoc = glGetUniformLocation(shaderProgram2, "mvLightMatrix");
+		pMatrixLightLoc = glGetUniformLocation(shaderProgram2, "pLightMatrix");
+		printf("%i", (int)mvMatrixLightLoc);
 	}
 
 
@@ -217,30 +203,27 @@ void prepareDisplay(void){
 }
 
 //Updates the modelview and projection matrix variables.
-void updateMatrices(){
+void updateShadowMatrices(){
 	glGetFloatv(GL_PROJECTION_MATRIX, projectionMatrix);
 	glGetFloatv(GL_MODELVIEW_MATRIX, modelViewMatrix);  
-	glUniformMatrix4fv(mvMatrixLoc,  1, GL_FALSE, modelViewMatrix);
-	glUniformMatrix4fv(pMatrixLoc,  1, GL_FALSE, projectionMatrix);
+	glUniformMatrix4fv(mvMatrixShadowLoc,  1, GL_FALSE, modelViewMatrix);
+	glUniformMatrix4fv(pMatrixShadowLoc,  1, GL_FALSE, projectionMatrix);
+	glUniformMatrix4fv(mvMatrixLightLoc,  1, GL_FALSE, modelViewLightMatrix);
+	glUniformMatrix4fv(pMatrixLightLoc,  1, GL_FALSE, projectionLightMatrix);
+	glUniform1f(timeLoc, timePassed);
+}
+
+//Updates the modelview and projection matrix variables.
+void updateLightMatrices(){
+	glGetFloatv(GL_PROJECTION_MATRIX, projectionLightMatrix);
+	glGetFloatv(GL_MODELVIEW_MATRIX, modelViewLightMatrix);  
+	glUniformMatrix4fv(mvMatrixLoc,  1, GL_FALSE, modelViewLightMatrix);
+	glUniformMatrix4fv(pMatrixLoc,  1, GL_FALSE, projectionLightMatrix);
 	glUniform1f(timeLoc, timePassed);
 }
 
 //Renders the scene
 void renderScene(void){
-	glColor3f(1, 1, 0);
-	//glutSolidCube(1.0);
-	glUseProgram(shaderProgram1);
-	updateMatrices();
-	cubeRender();
-	glUseProgram(0);
-	glPushMatrix();
-	glScalef(4, 4, 0.05);
-	//glutSolidCube(1.0);
-	glUseProgram(shaderProgram1);
-	updateMatrices();
-	cubeRender();
-	glUseProgram(0);
-	glPopMatrix();
 
 }
 
@@ -251,13 +234,30 @@ void display(void)
 	glLoadIdentity();
 	glEnable(GL_DEPTH_TEST);
 	
+	glDisable(GL_TEXTURE);
 	//First Pass (shadows)
 	glClearColor(0, 0, 0, 0);
 	glBindFramebuffer(GL_FRAMEBUFFER, shadowFBO);
 	glClear( GL_DEPTH_BUFFER_BIT );
-	gluLookAt(lightPos[0], lightPos[1], lightPos[2], 0, 0, 0, 0, 0, 1);
 	glOrtho(-10, 10, -10, 10, 1, 40);
-	renderScene();
+	gluLookAt(lightPos[0], lightPos[1], lightPos[2], 0, 0, 0, 0, 0, 1);
+	glUseProgram(shaderProgram1);
+	
+	updateLightMatrices();
+	cubeRender();
+	glTranslatef(0, 0, 1);
+	glScalef(2, 2, 0.1);
+	updateLightMatrices();
+	cubeRender();
+
+
+	//Retain the basic light transformations, for the shadow pass
+	glLoadIdentity();
+	glOrtho(-10, 10, -10, 10, 1, 40);
+	gluLookAt(lightPos[0], lightPos[1], lightPos[2], 0, 0, 0, 0, 0, 1);
+	updateLightMatrices();
+	
+	glUseProgram(0);
 	//renderScene();// First Pass
 
 
@@ -265,17 +265,23 @@ void display(void)
 	updateCamera();
 	glLoadIdentity();
 	glBindFramebuffer(GL_FRAMEBUFFER, screenFBO);
+	glEnable(GL_TEXTURE);
+	glBindTexture(GL_TEXTURE_2D, shadowTexture);
 	glClearColor(0, 0, 0, 0);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	gluPerspective(90, float(WINDOWX)/WINDOWY, 1, 40);
 	gluLookAt(camPos[0], camPos[1], camPos[2], 0, 0, 0, 0, 0, 1);
+	glUseProgram(shaderProgram2);
 
-	//Grab projection and modelview matrices
-	glUseProgram(shaderProgram1);
-	//Pass them into the shader
+	updateShadowMatrices();
+	cubeRender();
+	glTranslatef(0, 0, 1);
+	glScalef(2, 2, 0.1);
+	updateShadowMatrices();
+	cubeRender();
+	
 	glUseProgram(0);
 
-	renderScene();
 
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 	glLoadIdentity();
