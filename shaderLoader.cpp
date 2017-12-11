@@ -8,8 +8,13 @@
 
 #include "shaderLoader.hpp"
 
+shaderLoader::shaderLoader(){
+    
+}
+
+
 //This is taken from a tutorial :D
-GLuint loadShaderFromFile( std::string path, GLenum shaderType )
+GLuint shaderLoader::loadShaderFromFile( std::string path, GLenum shaderType )
 {
     //Open file
     GLuint shaderID = 0;

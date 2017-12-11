@@ -8,9 +8,17 @@
 
 #include "textureLoader.hpp"
 
-//This is taken from a tutorial :D
-GLuint loadTextureFromFile( std::string path)
-{
-    GLuint textureID = 0;
-    return textureID;
+
+textureLoader::textureLoader(){
+
 }
+GLuint textureLoader::loadTextureFromFile( std::string path){
+	GLuint textureID = 0;
+	return textureID;
+};
+
+GLuint textureLoader::loadTexture(std::string fileName){
+	//Given "example.png", open "GameAssets/textures/example.png" using loadTextureFromFile;
+	GLuint textureID = 0;
+	return textureID;
+};

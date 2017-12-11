@@ -12,7 +12,12 @@
 #include <fstream>
 
 
-GLuint loadTextureFromFile( std::string path);
+class textureLoader{
+	public:
+		textureLoader();
+		GLuint loadTextureFromFile( std::string path);
+		GLuint loadTexture(std::string fileName);
+};
 
 
 #endif

@@ -11,8 +11,12 @@
 #include <algorithm>
 #include <fstream>
 
-
-GLuint loadShaderFromFile(std::string path, GLenum shaderType);
+class shaderLoader
+{
+	public:
+		shaderLoader();
+		GLuint loadShaderFromFile(std::string path, GLenum shaderType);
+};
 
 
 #endif
