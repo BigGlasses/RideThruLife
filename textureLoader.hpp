@@ -15,9 +15,9 @@
 class textureLoader{
 	public:
 		textureLoader();
-		GLuint loadTextureFromFile( std::string path);
-	private:
 		GLuint loadTexture(std::string fileName);
+	private:
+		GLuint loadTextureFromFile( std::string path);
 };
 
 
