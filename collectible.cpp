@@ -33,26 +33,26 @@ float collectible::getZ()
 	return z;
 }
 
-void collectible::canBeCollected(float Inx, float Iny, float Inz)
+bool collectible::canBeCollected(float Inx, float Iny, float Inz)
 {
 	float threshold = 0.1;
-	if(Inx < x + threshold && Inx > x - threshold)
-		if(Iny < y + threshold && Iny > y - threshold)
-			if(Inx < z + threshold && Inz > z - threshold)
-			{
-				//Horrible checking
-			}
+	float dx = Inx - x;
+	float dy = Iny - y;
+	float dz = Inz - z;
+
+	float distance = dx*dx + dy*dy + dz*dz;
+	return distance < threshhold * threshhold;
 }
 
-void collectible::isClose(float Inx, float Iny, float Inz)
+bool collectible::isClose(float Inx, float Iny, float Inz)
 {
 	float threshold = 10.0;
-	if(Inx < x + threshold && Inx > x - threshold)
-		if(Iny < y + threshold && Iny > y - threshold)
-			if(Inx < z + threshold && Inz > z - threshold)
-			{
-				//Horrible checking
-			}
+	float dx = Inx - x;
+	float dy = Iny - y;
+	float dz = Inz - z;
+
+	float distance = dx*dx + dy*dy + dz*dz;
+	return distance < threshhold * threshhold;
 }
 
 void collectible::update()

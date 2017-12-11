@@ -15,8 +15,8 @@
 class collectible{
 	public:
 		collectible(float Inx, float Iny, float Inz, int life);
-		void canBeCollected(float Inx, float Iny, float Inz);
-		void isClose(float Inx, float Iny, float Inz);
+		bool canBeCollected(float Inx, float Iny, float Inz);
+		bool isClose(float Inx, float Iny, float Inz);
 		void update();
 		float getX();
 		float getY();
