@@ -2,6 +2,7 @@
 #define GameModel_H
 
 #include "OpenGLImports.hpp"
+#include "objLoader.hpp"
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -15,9 +16,11 @@
 class GameModel{
 	public:
 		GameModel();
-		GameModel::GameModel(std::string title, objLoader o);
+		GameModel(std::string title, objLoader o);
+		void draw();
 	private:
 		GLfloat* objectData;
+		GLuint dataBuffer;
 		std::string title;
 };
 

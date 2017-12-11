@@ -1,17 +1,17 @@
 #ifndef __CAMERA_H__	//guard against cyclic dependancy
 #define __CAMERA_H__ //written with help of LectureCode1 from avenue
 
-#include <glm.hpp>
+#include "glm/glm.hpp"
 
 //http://in2gpu.com/2016/03/14/opengl-fps-camera-quaternion/
 
 class Camera {
     public:    
-        updateView();
-        getViewMatrix();
-        keyPressed(const unsigned char);
-        mouseMove(int, int, int, int);
-        mousePressed(int, int, int, int);
+        void Camera::updateView();
+        glm::mat4 Camera::getViewMatrix();
+        void Camera::keyPressed(const unsigned char);
+        void Camera::mouseMove(int, int, int, int);
+        void Camera::mousePressed(int, int, int, int);
 
     private:
         glm::vec3 eyeVector;
