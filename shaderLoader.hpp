@@ -16,6 +16,7 @@ class shaderLoader
 	public:
 		shaderLoader();
 		GLuint loadShaderFromFile(std::string path, GLenum shaderType);
+	
 };
 
 

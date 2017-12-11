@@ -1,5 +1,5 @@
-#ifndef TEXTURELOADER_H
-#define TEXTURELOADER_H
+#ifndef OBJLOADER_H
+#define OBJLOADER_H
 
 #include "OpenGLImports.hpp"
 
@@ -12,12 +12,12 @@
 #include <fstream>
 
 
-class textureLoader{
+class objLoader{
 	public:
-		textureLoader();
-		GLuint loadTextureFromFile( std::string path);
+		objLoader();
+		GLfloat* loadObj(std::string fileName);
 	private:
-		GLuint loadTexture(std::string fileName);
+		GLfloat* loadObjFromFile( std::string path);
 };
 
 
