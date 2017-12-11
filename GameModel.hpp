@@ -1,5 +1,5 @@
-#ifndef TEXTURELOADER_H
-#define TEXTURELOADER_H
+#ifndef GameModel_H
+#define GameModel_H
 
 #include "OpenGLImports.hpp"
 
@@ -12,12 +12,13 @@
 #include <fstream>
 
 
-class textureLoader{
+class GameModel{
 	public:
-		textureLoader();
-		GLuint loadTexture(std::string fileName);
+		GameModel();
+		GameModel::GameModel(std::string title, objLoader o);
 	private:
-		GLuint loadTextureFromFile( std::string path);
+		GLfloat* objectData;
+		std::string title;
 };
 
 

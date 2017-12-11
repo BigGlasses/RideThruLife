@@ -8,6 +8,8 @@
 #include "OpenGLImports.hpp"
 #include "basicShapes.hpp"
 #include "shaderLoader.hpp"
+#include "textureLoader.hpp"
+#include "objLoader.hpp"
 
 
 //Constants
@@ -58,6 +60,8 @@ GLfloat  biasMatrix[16] = {
 ; 
 
 shaderLoader shaderLoading;
+textureLoader textureLoading;
+GLuint kek; 
 
 
 // Updates the camera position to reflect the yaw, pitch.
@@ -191,6 +195,7 @@ void init(void)
 
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
+	kek = textureLoading.loadTexture("example.bmp");
 }
 
 //Prepares the display
@@ -289,6 +294,7 @@ void display(void)
 	gluOrtho2D(-1, 1, -1, 1);
 
 	glBindTexture(GL_TEXTURE_2D, screenTexture);
+	glBindTexture(GL_TEXTURE_2D, kek);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	glEnable(GL_TEXTURE_2D);
 	glDisable(GL_DEPTH_TEST);

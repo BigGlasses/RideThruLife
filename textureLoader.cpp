@@ -24,7 +24,9 @@ GLuint textureLoader::loadTextureFromFile( std::string path){
 	unsigned char * data;
 
 	// Open the file
-	FILE * file = fopen(path.c_str(),"rb");
+	printf(path.c_str());
+	printf("\n");
+	FILE * file = fopen(path.c_str() ,"rb");
 	if (!file){printf("Image could not be opened\n"); return 0;}
 
 	if ( fread(header, 1, 54, file)!=54 )
@@ -66,7 +68,7 @@ GLuint textureLoader::loadTextureFromFile( std::string path){
 	glBindTexture(GL_TEXTURE_2D, textureID);
 
 	// Give the image to OpenGL
-	glTexImage2D(GL_TEXTURE_2D, 0,GL_RGB, width, height, 0, GL_BGR, GL_UNSIGNED_BYTE, data);
+	glTexImage2D(GL_TEXTURE_2D, 0,GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
 
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
@@ -76,7 +78,7 @@ GLuint textureLoader::loadTextureFromFile( std::string path){
 
 GLuint textureLoader::loadTexture(std::string fileName){
 	//Given "example.png", open "GameAssets/textures/example.png" using loadTextureFromFile;
-	std::string path = "GameAssests/textures/";
+	std::string path = "./GameAssets/textures/";
 	path.append(fileName);
 	GLuint textureID = loadTextureFromFile(path);
 	return textureID;

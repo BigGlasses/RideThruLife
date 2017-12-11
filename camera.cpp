@@ -8,8 +8,8 @@
 #  include <GL/freeglut.h>
 #endif
 
-#include <camera.hpp>
-#include <glm.hpp>
+#include "camera.hpp"
+#include <GL/glm.hpp>
 
 /*
 * Written with heavy help from http://in2gpu.com/2016/03/14/opengl-fps-camera-quaternion/
