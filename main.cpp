@@ -60,6 +60,7 @@ GLfloat  biasMatrix[16] = {
 0.5, 0.5, 0.5, 1.0}
 ; 
 
+
 shaderLoader shaderLoading;
 textureLoader textureLoading;
 GLuint kek; 
@@ -135,16 +136,16 @@ void prepareScreen(){
 //Prepares the shader.
 	void prepareShaders(){
 		shaderProgram1 = glCreateProgram();
-		GLuint vertexShader = shaderLoading.loadShaderFromFile( "shaders/testshader.vert", GL_VERTEX_SHADER );
+		GLuint vertexShader = loadShaderFromFile( "shaders/testshader.vert", GL_VERTEX_SHADER );
 		glAttachShader( shaderProgram1, vertexShader );
-		GLuint fragmentShader = shaderLoading.loadShaderFromFile( "shaders/testshader.frag", GL_FRAGMENT_SHADER );
+		GLuint fragmentShader = loadShaderFromFile( "shaders/testshader.frag", GL_FRAGMENT_SHADER );
 		glAttachShader( shaderProgram1, fragmentShader );
 		glLinkProgram( shaderProgram1 );
 
 		shaderProgram2 = glCreateProgram();
-		vertexShader = shaderLoading.loadShaderFromFile( "shaders/shadowShader.vert", GL_VERTEX_SHADER );
+		vertexShader = loadShaderFromFile( "shaders/shadowShader.vert", GL_VERTEX_SHADER );
 		glAttachShader( shaderProgram2, vertexShader );
-		fragmentShader = shaderLoading.loadShaderFromFile( "shaders/shadowShader.frag", GL_FRAGMENT_SHADER );
+		fragmentShader = loadShaderFromFile( "shaders/shadowShader.frag", GL_FRAGMENT_SHADER );
 		glAttachShader( shaderProgram2, fragmentShader );
 		glLinkProgram( shaderProgram2 );
 
