@@ -71,16 +71,15 @@ textureLoader textureLoading;
 objLoader objLoading;
 Camera cam;
 
-GLuint kek; 
-std::string title = "example2";
+std::string title = "grill";
 GameModel *gm;
 //GameModel *gm;
 
 // Updates the camera position to reflect the yaw, pitch.
 void updateCamera(){
 	camPos[0] = 8.0 * cos(yaw);
-	camPos[1] = 8.0 * sin(yaw);
-	camPos[2] = 0.5 * 4.0 * sin(pitch);
+	camPos[1] = 0.5 * 4.0 * sin(pitch);
+	camPos[2] = 8.0 * sin(yaw);
 }
 
 
@@ -216,7 +215,6 @@ void init(void)
 
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
-	kek = textureLoading.loadTexture("example.bmp");
 	gm  = new GameModel(title);
 }
 
@@ -270,7 +268,7 @@ void display(void)
 	glBindFramebuffer(GL_FRAMEBUFFER, shadowFBO);
 	glClear( GL_DEPTH_BUFFER_BIT );
 	glOrtho(-10, 10, -10, 10, 1, 40);
-	gluLookAt(lightPos[0], lightPos[1], lightPos[2], 0, 0, 0, 0, 0, 1);
+	gluLookAt(lightPos[0], lightPos[1], lightPos[2], 0, 0, 0, 0, 1, 0);
 	glUseProgram(shaderProgram1);
 	
 	updateLightMatrices();
@@ -284,7 +282,7 @@ void display(void)
 	//Retain the basic light transformations, for the shadow pass
 	glLoadIdentity();
 	glOrtho(-10, 10, -10, 10, 1, 40);
-	gluLookAt(lightPos[0], lightPos[1], lightPos[2], 0, 0, 0, 0, 0, 1);
+	gluLookAt(lightPos[0], lightPos[1], lightPos[2], 0, 0, 0, 0, 1, 0);
 	updateLightMatrices();
 	
 	glUseProgram(0);
@@ -306,7 +304,7 @@ void display(void)
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 	gluPerspective(90, float(WINDOWX)/WINDOWY, 1, 40);
-	gluLookAt(camPos[0], camPos[1], camPos[2], 0, 0, 0, 0, 0, 1);
+	gluLookAt(camPos[0], camPos[1], camPos[2], 0, 0, 0, 0, 1, 0);
 	//cam.updateView();
 
 	//glLoadMatrixf(vm);
@@ -327,7 +325,6 @@ void display(void)
 	gluOrtho2D(-1, 1, -1, 1);
 
 	glBindTexture(GL_TEXTURE_2D, screenTexture);
-	//glBindTexture(GL_TEXTURE_2D, kek);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	glEnable(GL_TEXTURE_2D);
 	glDisable(GL_DEPTH_TEST);

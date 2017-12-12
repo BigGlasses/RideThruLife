@@ -31,10 +31,11 @@ GameModel::GameModel(std::string title){
 	this->textureID = tl.loadTexture(title + ".bmp");
 	int *n = new int[1];
 
-	int *numVertices = new int[1]; //15 is stride
-	numVertices[0] = n[0]/15;
-
 	objectData = ol.loadObj((title + ".txt").c_str(), n);
+
+	numVertices = n[0]/15; //15 is stride
+	//printf("%i\n", n[0]);
+	//printf("%i\n", numVertices);
 	//objectData = dataTest;
 	glGenBuffers(1, &dataBuffer);
 	glBindBuffer(GL_ARRAY_BUFFER, dataBuffer);
@@ -43,6 +44,7 @@ GameModel::GameModel(std::string title){
 }
 
 void GameModel::draw(){
+	//printf("\n%i dog\n", textureID);
 	glBindTexture(GL_TEXTURE_2D, textureID);
 
 	glEnableVertexAttribArray(0);
@@ -66,8 +68,8 @@ void GameModel::draw(){
 
 	glVertexAttribPointer(5, 3, GL_FLOAT, GL_FALSE, stride,  (GLvoid*)(12 * sizeof(GL_FLOAT)) );
 
-	//printf("%d\n", sizeof(*objectData));
-	glDrawArrays(GL_TRIANGLES, 0, numVertices[0]);
+	//printf("%d\n", numVertices);
+	glDrawArrays(GL_TRIANGLES, 0, numVertices);
 	
 	glDisableVertexAttribArray(0);
 	glDisableVertexAttribArray(1);

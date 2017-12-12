@@ -49,11 +49,9 @@ GLfloat* objLoader::loadObjFromFile(const char* filename, int* n){
 	while (in >> number) {
 		//for (int i = 0; i < numVertices; i++) {
 		vertex_data[i] = number;
-		//printf("%f %i\n", number, i);
 		//}
 		i++;
 	}
-	printf("curry dinner");
 
 
 	return vertex_data;

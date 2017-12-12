@@ -23,7 +23,8 @@ class GameModel{
 		GLfloat* objectData;
 		GLuint dataBuffer;
 		std::string title;
-		int* numVertices;
+		int numVertices;
+		int* n;
 		GLuint textureID;
 };
 
