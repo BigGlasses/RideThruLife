@@ -71,9 +71,9 @@ textureLoader textureLoading;
 objLoader objLoading;
 Camera cam;
 
-std::string title = "bike";
+std::string title = "dinner_table";
 GameModel *gm;
-//GameModel *gm;
+//GameModel *gm;	
 
 // Updates the camera position to reflect the yaw, pitch.
 void updateCamera(){
@@ -276,7 +276,7 @@ void display(void)
 	glTranslatef(0, 0, 1);
 	glScalef(2, 2, 0.1);
 	updateLightMatrices();
-	gm->draw();
+	//gm->draw();
 
 
 	//Retain the basic light transformations, for the shadow pass
@@ -315,7 +315,7 @@ void display(void)
 	glTranslatef(0, 0, 1);
 	glScalef(2, 2, 0.1);
 	updateShadowMatrices();
-	gm->draw();
+	//gm->draw();
 	
 	glUseProgram(0);
 
