@@ -11,6 +11,7 @@
 #include "textureLoader.hpp"
 #include "objLoader.hpp"
 #include "GameModel.hpp"
+#include "camera.hpp"
 
 
 //Constants
@@ -48,6 +49,10 @@ GLuint mvMatrixShadowLoc;
 GLuint pMatrixShadowLoc;
 GLuint mvMatrixLightLoc;
 GLuint pMatrixLightLoc;
+
+GLuint normalTexLoc;
+GLuint shadowTexLoc;
+
 GLuint timeLoc;
 GLfloat  modelViewMatrix[16]; 
 GLfloat  projectionMatrix[16]; 
@@ -64,6 +69,7 @@ GLfloat  biasMatrix[16] = {
 shaderLoader shaderLoading;
 textureLoader textureLoading;
 objLoader objLoading;
+Camera cam;
 
 GLuint kek; 
 std::string title = "example";
@@ -162,36 +168,45 @@ void prepareScreen(){
 		pMatrixShadowLoc = glGetUniformLocation(shaderProgram2, "pMatrix");
 		mvMatrixLightLoc = glGetUniformLocation(shaderProgram2, "mvLightMatrix");
 		pMatrixLightLoc = glGetUniformLocation(shaderProgram2, "pLightMatrix");
-		printf("%i", (int)mvMatrixLightLoc);
+		normalTexLoc = glGetUniformLocation(shaderProgram2, "normalTexture");
+		shadowTexLoc = glGetUniformLocation(shaderProgram2, "shadowTexture");
+
 	}
 
 
 //GLUT keyboard functions
 	void keyboard(unsigned char key, int xIn, int yIn)
 	{
+		// cam.keyPressed(key);
 		switch (key)
 		{
 			case 'q':
-		case 27:	//27 is the esc key
-		exit(0);
-		break;
-		case 'd':
-		break;
-		case 'j':
-		yaw += 0.1;
-		break;
-		case 'l':
-		yaw -= 0.1;
-		break;
-		case 'i':
-		pitch += 0.1;
-		break;
-		case 'k':
-		pitch -= 0.1;
-		break;
+			case 27:	//27 is the esc key
+			exit(0);
+			break;
+			case 'd':
+			break;
+			case 'j':
+			yaw += 0.1;
+			break;
+			case 'l':
+			yaw -= 0.1;
+			break;
+			case 'i':
+			pitch += 0.1;
+			break;
+			case 'k':
+			pitch -= 0.1;
+			break;
 	}
 }
 
+void mouseMove(int x, int y){
+	//cam.mouseMove( x, y, WINDOWX, WINDOWY);
+}
+void mousePressed(int btn, int state, int x, int y){
+	//cam.mousePressed(btn, state, x, y);
+}
 
 void init(void)
 {
@@ -224,6 +239,8 @@ void updateShadowMatrices(){
 	glUniformMatrix4fv(mvMatrixLightLoc,  1, GL_FALSE, modelViewLightMatrix);
 	glUniformMatrix4fv(pMatrixLightLoc,  1, GL_FALSE, projectionLightMatrix);
 	glUniform1f(timeLoc, timePassed);
+	glUniform1i(normalTexLoc, 0);
+	glUniform1i(shadowTexLoc, 1);
 }
 
 //Updates the modelview and projection matrix variables.
@@ -279,11 +296,23 @@ void display(void)
 	glLoadIdentity();
 	glBindFramebuffer(GL_FRAMEBUFFER, screenFBO);
 	glEnable(GL_TEXTURE);
+
+	glActiveTexture(GL_TEXTURE0);
+	glBindTexture(GL_TEXTURE_2D, kek);
+
+	glActiveTexture(GL_TEXTURE1);
 	glBindTexture(GL_TEXTURE_2D, shadowTexture);
+
+	glActiveTexture(GL_TEXTURE0);
+
 	glClearColor(0, 0, 0, 0);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
 	gluPerspective(90, float(WINDOWX)/WINDOWY, 1, 40);
 	gluLookAt(camPos[0], camPos[1], camPos[2], 0, 0, 0, 0, 0, 1);
+	//cam.updateView();
+
+	//glLoadMatrixf(vm);
 	glUseProgram(shaderProgram2);
 
 	updateShadowMatrices();
@@ -372,6 +401,8 @@ int main(int argc, char** argv)
 
 	glutDisplayFunc(display);	//registers "display" as the display callback function
 	glutKeyboardFunc(keyboard);
+	glutMouseFunc(mousePressed);
+	glutPassiveMotionFunc(mouseMove);
 	//glutSpecialFunc(SpecialInput);
 	glutTimerFunc(1000/FPS, FPSUpdate , 0);
 	glutReshapeFunc(resizeFunc);

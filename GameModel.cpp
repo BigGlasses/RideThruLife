@@ -29,7 +29,8 @@ GameModel::GameModel(std::string title, objLoader o){
 	this->title = title;
 	int *n = new int[1];
 
-	numVertices = n[0]/15; //15 is stride
+	int *numVertices = new int[1]; //15 is stride
+	numVertices[0]= n[0]/15;
 
 	objectData = o.loadObj((title + ".txt").c_str(), n);
 	//objectData = dataTest;
@@ -63,7 +64,7 @@ void GameModel::draw(){
 
 
 	//printf("%d\n", sizeof(*objectData));
-	glDrawArrays(GL_TRIANGLES, 0, numVertices);
+	glDrawArrays(GL_TRIANGLES, 0, numVertices[0]);
 	
 	glDisableVertexAttribArray(0);
 	glDisableVertexAttribArray(1);

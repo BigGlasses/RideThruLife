@@ -1,7 +1,6 @@
 #version 330 compatibility
 
 uniform mat4 mvMatrix, pMatrix;
-uniform sampler2D t;
 uniform float time;
 
 layout (location=0) in vec3 position;
@@ -17,7 +16,7 @@ out vec3 Color;
 void main()
 {
 	//Color = color;// * (0.7 + sin(time*position.x * pi*2)/6 + cos(time*position.y * pi*2)/6);
-	Color = color* texture2D(t,textureCoord.xy);
+	Color = color;
     gl_Position = pMatrix * mvMatrix * vec4(position, 1);
     //gl_Position = gl_ModelViewProjectionMatrix * vec4(position, 1); //Deprecated way to transform 3D to 2D
 }
