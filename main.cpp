@@ -10,6 +10,7 @@
 #include "shaderLoader.hpp"
 #include "textureLoader.hpp"
 #include "objLoader.hpp"
+#include "GameModel.hpp"
 
 
 //Constants
@@ -62,6 +63,7 @@ GLfloat  biasMatrix[16] = {
 shaderLoader shaderLoading;
 textureLoader textureLoading;
 GLuint kek; 
+GameModel gm;
 
 
 // Updates the camera position to reflect the yaw, pitch.
@@ -250,11 +252,11 @@ void display(void)
 	glUseProgram(shaderProgram1);
 	
 	updateLightMatrices();
-	cubeRender();
+	//cubeRender();
 	glTranslatef(0, 0, 1);
 	glScalef(2, 2, 0.1);
 	updateLightMatrices();
-	cubeRender();
+	gm.draw();
 
 
 	//Retain the basic light transformations, for the shadow pass
@@ -280,11 +282,11 @@ void display(void)
 	glUseProgram(shaderProgram2);
 
 	updateShadowMatrices();
-	cubeRender();
+	//cubeRender();
 	glTranslatef(0, 0, 1);
 	glScalef(2, 2, 0.1);
 	updateShadowMatrices();
-	cubeRender();
+	gm.draw();
 	
 	glUseProgram(0);
 
