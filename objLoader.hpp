@@ -16,9 +16,9 @@ using namespace std;
 class objLoader{
 	public:
 		objLoader();
-		GLfloat* loadObj(const char* fileName);
+		GLfloat* loadObj(const char* fileName, int* n);
 	private:
-		GLfloat* loadObjFromFile(const char* path);
+		GLfloat* loadObjFromFile(const char* path, int* n);
 };
 
 

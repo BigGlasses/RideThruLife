@@ -63,9 +63,12 @@ GLfloat  biasMatrix[16] = {
 
 shaderLoader shaderLoading;
 textureLoader textureLoading;
-GLuint kek; 
-GameModel gm;
+objLoader objLoading;
 
+GLuint kek; 
+std::string title = "example";
+GameModel *gm;
+//GameModel *gm;
 
 // Updates the camera position to reflect the yaw, pitch.
 void updateCamera(){
@@ -136,16 +139,16 @@ void prepareScreen(){
 //Prepares the shader.
 	void prepareShaders(){
 		shaderProgram1 = glCreateProgram();
-		GLuint vertexShader = loadShaderFromFile( "shaders/testshader.vert", GL_VERTEX_SHADER );
+		GLuint vertexShader = shaderLoading.loadShaderFromFile( "shaders/testshader.vert", GL_VERTEX_SHADER );
 		glAttachShader( shaderProgram1, vertexShader );
-		GLuint fragmentShader = loadShaderFromFile( "shaders/testshader.frag", GL_FRAGMENT_SHADER );
+		GLuint fragmentShader = shaderLoading.loadShaderFromFile( "shaders/testshader.frag", GL_FRAGMENT_SHADER );
 		glAttachShader( shaderProgram1, fragmentShader );
 		glLinkProgram( shaderProgram1 );
 
 		shaderProgram2 = glCreateProgram();
-		vertexShader = loadShaderFromFile( "shaders/shadowShader.vert", GL_VERTEX_SHADER );
+		vertexShader = shaderLoading.loadShaderFromFile( "shaders/shadowShader.vert", GL_VERTEX_SHADER );
 		glAttachShader( shaderProgram2, vertexShader );
-		fragmentShader = loadShaderFromFile( "shaders/shadowShader.frag", GL_FRAGMENT_SHADER );
+		fragmentShader = shaderLoading.loadShaderFromFile( "shaders/shadowShader.frag", GL_FRAGMENT_SHADER );
 		glAttachShader( shaderProgram2, fragmentShader );
 		glLinkProgram( shaderProgram2 );
 
@@ -199,6 +202,7 @@ void init(void)
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
 	kek = textureLoading.loadTexture("example.bmp");
+	gm  = new GameModel(title, objLoading);
 }
 
 //Prepares the display
@@ -253,11 +257,11 @@ void display(void)
 	glUseProgram(shaderProgram1);
 	
 	updateLightMatrices();
-	//cubeRender();
+	gm->draw();
 	glTranslatef(0, 0, 1);
 	glScalef(2, 2, 0.1);
 	updateLightMatrices();
-	gm.draw();
+	gm->draw();
 
 
 	//Retain the basic light transformations, for the shadow pass
@@ -283,11 +287,11 @@ void display(void)
 	glUseProgram(shaderProgram2);
 
 	updateShadowMatrices();
-	//cubeRender();
+	gm->draw();
 	glTranslatef(0, 0, 1);
 	glScalef(2, 2, 0.1);
 	updateShadowMatrices();
-	gm.draw();
+	gm->draw();
 	
 	glUseProgram(0);
 
