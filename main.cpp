@@ -71,7 +71,7 @@ textureLoader textureLoading;
 objLoader objLoading;
 Camera cam;
 
-std::string title = "grill";
+std::string title = "bike";
 GameModel *gm;
 //GameModel *gm;
 
