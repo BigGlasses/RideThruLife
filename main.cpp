@@ -72,7 +72,7 @@ objLoader objLoading;
 Camera cam;
 
 GLuint kek; 
-std::string title = "example";
+std::string title = "example2";
 GameModel *gm;
 //GameModel *gm;
 
@@ -217,7 +217,7 @@ void init(void)
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
 	kek = textureLoading.loadTexture("example.bmp");
-	gm  = new GameModel(title, objLoading);
+	gm  = new GameModel(title);
 }
 
 //Prepares the display
@@ -296,9 +296,6 @@ void display(void)
 	glLoadIdentity();
 	glBindFramebuffer(GL_FRAMEBUFFER, screenFBO);
 	glEnable(GL_TEXTURE);
-
-	glActiveTexture(GL_TEXTURE0);
-	glBindTexture(GL_TEXTURE_2D, kek);
 
 	glActiveTexture(GL_TEXTURE1);
 	glBindTexture(GL_TEXTURE_2D, shadowTexture);
