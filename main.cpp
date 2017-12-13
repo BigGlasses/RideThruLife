@@ -71,7 +71,7 @@ textureLoader textureLoading;
 objLoader objLoading;
 Camera cam;
 
-std::string title = "dinner_table";
+std::string title = "christmas_tree";
 GameModel *gm;
 //GameModel *gm;	
 
