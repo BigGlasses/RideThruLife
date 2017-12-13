@@ -7,15 +7,17 @@
 #include <fstream>
 
 #include "collectible.hpp"
+#include "GameModel.hpp"
 
 //lifeTime = 0;
 
-collectible::collectible(float Inx, float Iny, float Inz, int life)
+collectible::collectible(float Inx, float Iny, float Inz, int life, GameModel Inmodel)
 {
 	x = Inx;
 	y = Iny;
 	z = Inz;
 	life = lifeTime;
+	model = Inmodel;
 }
 
 float collectible::getX()
@@ -31,6 +33,11 @@ float collectible::getY()
 float collectible::getZ()
 {
 	return z;
+}
+
+GameModel collectible::getModel()
+{
+	return model;
 }
 
 bool collectible::canBeCollected(float Inx, float Iny, float Inz)
