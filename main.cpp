@@ -10,6 +10,8 @@
 #include "shaderLoader.hpp"
 #include "textureLoader.hpp"
 #include "objLoader.hpp"
+#include "GameModel.hpp"
+#include "camera.hpp"
 
 
 //Constants
@@ -47,6 +49,10 @@ GLuint mvMatrixShadowLoc;
 GLuint pMatrixShadowLoc;
 GLuint mvMatrixLightLoc;
 GLuint pMatrixLightLoc;
+
+GLuint normalTexLoc;
+GLuint shadowTexLoc;
+
 GLuint timeLoc;
 GLfloat  modelViewMatrix[16]; 
 GLfloat  projectionMatrix[16]; 
@@ -62,14 +68,18 @@ GLfloat  biasMatrix[16] = {
 
 shaderLoader shaderLoading;
 textureLoader textureLoading;
-GLuint kek; 
+objLoader objLoading;
+Camera cam;
 
+std::string title = "dinner_table";
+GameModel *gm;
+//GameModel *gm;	
 
 // Updates the camera position to reflect the yaw, pitch.
 void updateCamera(){
 	camPos[0] = 8.0 * cos(yaw);
-	camPos[1] = 8.0 * sin(yaw);
-	camPos[2] = 0.5 * 4.0 * sin(pitch);
+	camPos[1] = 0.5 * 4.0 * sin(pitch);
+	camPos[2] = 8.0 * sin(yaw);
 }
 
 
@@ -134,16 +144,16 @@ void prepareScreen(){
 //Prepares the shader.
 	void prepareShaders(){
 		shaderProgram1 = glCreateProgram();
-		GLuint vertexShader = loadShaderFromFile( "shaders/testshader.vert", GL_VERTEX_SHADER );
+		GLuint vertexShader = shaderLoading.loadShaderFromFile( "shaders/testshader.vert", GL_VERTEX_SHADER );
 		glAttachShader( shaderProgram1, vertexShader );
-		GLuint fragmentShader = loadShaderFromFile( "shaders/testshader.frag", GL_FRAGMENT_SHADER );
+		GLuint fragmentShader = shaderLoading.loadShaderFromFile( "shaders/testshader.frag", GL_FRAGMENT_SHADER );
 		glAttachShader( shaderProgram1, fragmentShader );
 		glLinkProgram( shaderProgram1 );
 
 		shaderProgram2 = glCreateProgram();
-		vertexShader = loadShaderFromFile( "shaders/shadowShader.vert", GL_VERTEX_SHADER );
+		vertexShader = shaderLoading.loadShaderFromFile( "shaders/shadowShader.vert", GL_VERTEX_SHADER );
 		glAttachShader( shaderProgram2, vertexShader );
-		fragmentShader = loadShaderFromFile( "shaders/shadowShader.frag", GL_FRAGMENT_SHADER );
+		fragmentShader = shaderLoading.loadShaderFromFile( "shaders/shadowShader.frag", GL_FRAGMENT_SHADER );
 		glAttachShader( shaderProgram2, fragmentShader );
 		glLinkProgram( shaderProgram2 );
 
@@ -157,36 +167,45 @@ void prepareScreen(){
 		pMatrixShadowLoc = glGetUniformLocation(shaderProgram2, "pMatrix");
 		mvMatrixLightLoc = glGetUniformLocation(shaderProgram2, "mvLightMatrix");
 		pMatrixLightLoc = glGetUniformLocation(shaderProgram2, "pLightMatrix");
-		printf("%i", (int)mvMatrixLightLoc);
+		normalTexLoc = glGetUniformLocation(shaderProgram2, "normalTexture");
+		shadowTexLoc = glGetUniformLocation(shaderProgram2, "shadowTexture");
+
 	}
 
 
 //GLUT keyboard functions
 	void keyboard(unsigned char key, int xIn, int yIn)
 	{
+		// cam.keyPressed(key);
 		switch (key)
 		{
 			case 'q':
-		case 27:	//27 is the esc key
-		exit(0);
-		break;
-		case 'd':
-		break;
-		case 'j':
-		yaw += 0.1;
-		break;
-		case 'l':
-		yaw -= 0.1;
-		break;
-		case 'i':
-		pitch += 0.1;
-		break;
-		case 'k':
-		pitch -= 0.1;
-		break;
+			case 27:	//27 is the esc key
+			exit(0);
+			break;
+			case 'd':
+			break;
+			case 'j':
+			yaw += 0.1;
+			break;
+			case 'l':
+			yaw -= 0.1;
+			break;
+			case 'i':
+			pitch += 0.1;
+			break;
+			case 'k':
+			pitch -= 0.1;
+			break;
 	}
 }
 
+void mouseMove(int x, int y){
+	//cam.mouseMove( x, y, WINDOWX, WINDOWY);
+}
+void mousePressed(int btn, int state, int x, int y){
+	//cam.mousePressed(btn, state, x, y);
+}
 
 void init(void)
 {
@@ -196,7 +215,7 @@ void init(void)
 
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
-	kek = textureLoading.loadTexture("example.bmp");
+	gm  = new GameModel(title);
 }
 
 //Prepares the display
@@ -218,6 +237,8 @@ void updateShadowMatrices(){
 	glUniformMatrix4fv(mvMatrixLightLoc,  1, GL_FALSE, modelViewLightMatrix);
 	glUniformMatrix4fv(pMatrixLightLoc,  1, GL_FALSE, projectionLightMatrix);
 	glUniform1f(timeLoc, timePassed);
+	glUniform1i(normalTexLoc, 0);
+	glUniform1i(shadowTexLoc, 1);
 }
 
 //Updates the modelview and projection matrix variables.
@@ -247,21 +268,21 @@ void display(void)
 	glBindFramebuffer(GL_FRAMEBUFFER, shadowFBO);
 	glClear( GL_DEPTH_BUFFER_BIT );
 	glOrtho(-10, 10, -10, 10, 1, 40);
-	gluLookAt(lightPos[0], lightPos[1], lightPos[2], 0, 0, 0, 0, 0, 1);
+	gluLookAt(lightPos[0], lightPos[1], lightPos[2], 0, 0, 0, 0, 1, 0);
 	glUseProgram(shaderProgram1);
 	
 	updateLightMatrices();
-	cubeRender();
+	gm->draw();
 	glTranslatef(0, 0, 1);
 	glScalef(2, 2, 0.1);
 	updateLightMatrices();
-	cubeRender();
+	//gm->draw();
 
 
 	//Retain the basic light transformations, for the shadow pass
 	glLoadIdentity();
 	glOrtho(-10, 10, -10, 10, 1, 40);
-	gluLookAt(lightPos[0], lightPos[1], lightPos[2], 0, 0, 0, 0, 0, 1);
+	gluLookAt(lightPos[0], lightPos[1], lightPos[2], 0, 0, 0, 0, 1, 0);
 	updateLightMatrices();
 	
 	glUseProgram(0);
@@ -273,19 +294,28 @@ void display(void)
 	glLoadIdentity();
 	glBindFramebuffer(GL_FRAMEBUFFER, screenFBO);
 	glEnable(GL_TEXTURE);
+
+	glActiveTexture(GL_TEXTURE1);
 	glBindTexture(GL_TEXTURE_2D, shadowTexture);
+
+	glActiveTexture(GL_TEXTURE0);
+
 	glClearColor(0, 0, 0, 0);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
 	gluPerspective(90, float(WINDOWX)/WINDOWY, 1, 40);
-	gluLookAt(camPos[0], camPos[1], camPos[2], 0, 0, 0, 0, 0, 1);
+	gluLookAt(camPos[0], camPos[1], camPos[2], 0, 0, 0, 0, 1, 0);
+	//cam.updateView();
+
+	//glLoadMatrixf(vm);
 	glUseProgram(shaderProgram2);
 
 	updateShadowMatrices();
-	cubeRender();
+	gm->draw();
 	glTranslatef(0, 0, 1);
 	glScalef(2, 2, 0.1);
 	updateShadowMatrices();
-	cubeRender();
+	//gm->draw();
 	
 	glUseProgram(0);
 
@@ -295,7 +325,6 @@ void display(void)
 	gluOrtho2D(-1, 1, -1, 1);
 
 	glBindTexture(GL_TEXTURE_2D, screenTexture);
-	//glBindTexture(GL_TEXTURE_2D, kek);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	glEnable(GL_TEXTURE_2D);
 	glDisable(GL_DEPTH_TEST);
@@ -366,6 +395,8 @@ int main(int argc, char** argv)
 
 	glutDisplayFunc(display);	//registers "display" as the display callback function
 	glutKeyboardFunc(keyboard);
+	glutMouseFunc(mousePressed);
+	glutPassiveMotionFunc(mouseMove);
 	//glutSpecialFunc(SpecialInput);
 	glutTimerFunc(1000/FPS, FPSUpdate , 0);
 	glutReshapeFunc(resizeFunc);

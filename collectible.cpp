@@ -41,7 +41,7 @@ bool collectible::canBeCollected(float Inx, float Iny, float Inz)
 	float dz = Inz - z;
 
 	float distance = dx*dx + dy*dy + dz*dz;
-	return distance < threshhold * threshhold;
+	return distance < threshold * threshold;
 }
 
 bool collectible::isClose(float Inx, float Iny, float Inz)
@@ -52,7 +52,7 @@ bool collectible::isClose(float Inx, float Iny, float Inz)
 	float dz = Inz - z;
 
 	float distance = dx*dx + dy*dy + dz*dz;
-	return distance < threshhold * threshhold;
+	return distance < threshold * threshold;
 }
 
 void collectible::update()

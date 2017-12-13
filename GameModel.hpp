@@ -3,6 +3,7 @@
 
 #include "OpenGLImports.hpp"
 #include "objLoader.hpp"
+#include "textureLoader.hpp"
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -16,12 +17,15 @@
 class GameModel{
 	public:
 		GameModel();
-		GameModel(std::string title, objLoader o);
+		GameModel(std::string title);
 		void draw();
 	private:
 		GLfloat* objectData;
 		GLuint dataBuffer;
 		std::string title;
+		int numVertices;
+		int* n;
+		GLuint textureID;
 };
 
 

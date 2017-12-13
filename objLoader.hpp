@@ -11,13 +11,14 @@
 #include <algorithm>
 #include <fstream>
 
+using namespace std;
 
 class objLoader{
 	public:
 		objLoader();
-		GLfloat* loadObj(std::string fileName);
+		GLfloat* loadObj(const char* fileName, int* n);
 	private:
-		GLfloat* loadObjFromFile( std::string path);
+		GLfloat* loadObjFromFile(const char* path, int* n);
 };
 
 
