@@ -11,13 +11,17 @@
 #include <algorithm>
 #include <fstream>
 
+#include "GameModel.hpp"
+
 
 class vehicle{
 	public:
-		vehicle(float Inx, float Iny, float Inz, float acceleration, float turning, float brakes, float fuelEfficency, bool isBoat);
+		vehicle(float Inx, float Iny, float Inz, float acceleration, float turning, float brakes, float fuelEfficency, bool isBoat, GameModel Inmodel);
 		void update();
 		void accelerate(bool state);
-		void rotate(bool direction);
+		void turn(bool direction);
+		void ChangeTilt(bool direction, float mag);
+		void ChangeRoll(bool direction, float mag);
 		void brake(bool state);
 		float getX();
 		float getY();
@@ -30,6 +34,10 @@ class vehicle{
 		float getBrakes();
 		float getfuelEfficency();
 		bool getBoat();
+		float getRotation();
+		float getTilt();
+		float getRoll();
+		GameModel getModel();
 
 	private:
 		float x = 0.0;
@@ -40,12 +48,15 @@ class vehicle{
 		float speedZ = 0.0;
 		float acceleration = 0.0;
 		float rotation = 0.0;
+		float tilt = 0.0;
+		float roll = 0.0;
 		float turning = 0.0;
 		float brakes = 0.0;
 		float fuelEfficency = 0.0;
 		bool isBoat = false;
 		bool isAccelerating = false;
 		bool isBraking = false;
+		GameModel model;
 };
 
 

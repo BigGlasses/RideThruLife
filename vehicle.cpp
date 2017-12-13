@@ -7,9 +7,10 @@
 #include <fstream>
 
 #include "vehicle.hpp"
+#include "GameModel.hpp"
 
 //Gaint constructor, sorry
-vehicle::vehicle(float Inx, float Iny, float Inz, float Inacceleration, float Inturning, float Inbrakes, float InfuelEfficency, bool InisBoat)
+vehicle::vehicle(float Inx, float Iny, float Inz, float Inacceleration, float Inturning, float Inbrakes, float InfuelEfficency, bool InisBoat, GameModel InModel)
 {
 	x = Inx;
 	y = Iny;
@@ -19,6 +20,7 @@ vehicle::vehicle(float Inx, float Iny, float Inz, float Inacceleration, float In
 	brakes = Inbrakes;
 	fuelEfficency = InfuelEfficency;
 	isBoat = InisBoat;
+	model = InModel;
 }
 
 //Many accessors
@@ -77,6 +79,25 @@ bool vehicle::getBoat()
 	return isBoat;
 }
 
+float vehicle::getRotation()
+{
+	return rotation;
+}
+
+float vehicle::getTilt()
+{
+	return tilt;
+}
+
+float vehicle::getRoll()
+{
+	return roll;
+}
+
+GameModel vehicle::getModel()
+{
+	return model;
+}
 
 //Set accelereating
 void vehicle::accelerate(bool state)
@@ -86,7 +107,7 @@ void vehicle::accelerate(bool state)
 
 //Rotate, true for positive false for negitave
 //Rotation is 0-360.  Assuming this would be used on the x-Plane.  Don't know if we want other rotations? (y,z)?
-void vehicle::rotate(bool direction)
+void vehicle::turn(bool direction)
 {
 	if(direction)
 		rotation += turning;
@@ -98,6 +119,32 @@ void vehicle::rotate(bool direction)
 		//Fix underflow
 		if(rotation < 0)
 			rotation = rotation + 360;
+}
+
+void vehicle::ChangeTilt(bool direction, float mag)
+{
+	if(direction)
+		tilt += mag;
+		if(tilt > 360)
+			tilt = static_cast<int>(tilt) % 360;
+	else
+		tilt -= mag;
+		//Fix underflow
+		if(tilt < 0)
+			tilt = tilt + 360;
+}
+
+void vehicle::ChangeRoll(bool direction, float mag)
+{
+	if(direction)
+		roll += mag;
+		if(roll > 360)
+			roll = static_cast<int>(roll) % 360;
+	else
+		roll -= mag;
+		//Fix underflow
+		if(roll < 0)
+			roll = roll + 360;
 }
 
 //Set braking
@@ -121,10 +168,7 @@ void vehicle::update()
 	}
 
 	//Update position
-	x += speedX
-		y += speedY;
+	x += speedX;
+	y += speedY;
 	z += speedZ;
 }
-
-
-
