@@ -3,24 +3,27 @@
 #include <math.h>
 #include <cmath>
 #include <string>
+#include <vector>
 #include <algorithm>
 #include <fstream>
 #include "OpenGLImports.hpp"
-#include "basicShapes.hpp"
+#include "GameData.hpp"
 #include "shaderLoader.hpp"
 #include "textureLoader.hpp"
 #include "objLoader.hpp"
 #include "GameModel.hpp"
 #include "camera.hpp"
+#include "vehicleselect.hpp"
 
 
 //Constants
-const int RENDERMODE_SOLID = 0;
-const int RENDERMODE_WIREFRAME = 1;
-const int RENDERMODE_SOLIDWIREFAME = 2;
+const int GAMESTATE_VEHICLESELECT = 0;
+const int GAMESTATE_START_GAME = 1;
+const int GAMESTATE_STARTED_GAME = 2;
 float camPos[] = {0, 0, 3.42f};	//where the camera is
 float lightPos[] = {5, 5, 5};
 
+int gamestate = GAMESTATE_VEHICLESELECT;
 
 //Window size
 int WINDOWX = 800;
@@ -71,15 +74,12 @@ textureLoader textureLoading;
 objLoader objLoading;
 Camera cam;
 
-std::string title = "christmas_tree";
-GameModel *gm;
-//GameModel *gm;	
 
 // Updates the camera position to reflect the yaw, pitch.
 void updateCamera(){
-	camPos[0] = 8.0 * cos(yaw);
-	camPos[1] = 0.5 * 4.0 * sin(pitch);
-	camPos[2] = 8.0 * sin(yaw);
+	camPos[0] = 16.0 * cos(yaw);
+	camPos[1] = 16.0 * sin(pitch);
+	camPos[2] = 16.0 * sin(yaw);
 }
 
 
@@ -181,7 +181,7 @@ void prepareScreen(){
 		{
 			case 'q':
 			case 27:	//27 is the esc key
-			exit(0);
+			exit(0); 
 			break;
 			case 'd':
 			break;
@@ -196,6 +196,9 @@ void prepareScreen(){
 			break;
 			case 'k':
 			pitch -= 0.1;
+			break;
+			case 'p':
+			gms.pop_back();
 			break;
 	}
 }
@@ -215,7 +218,8 @@ void init(void)
 
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
-	gm  = new GameModel(title);
+	loadAssets();
+
 }
 
 //Prepares the display
@@ -225,7 +229,6 @@ void prepareDisplay(void){
 	prepareScreen();
 	prepareShadow();
 	prepareShaders();
-	prepareBuffers();
 }
 
 //Updates the modelview and projection matrix variables.
@@ -272,7 +275,7 @@ void display(void)
 	glUseProgram(shaderProgram1);
 	
 	updateLightMatrices();
-	gm->draw();
+	gms.back().draw();
 	glTranslatef(0, 0, 1);
 	glScalef(2, 2, 0.1);
 	updateLightMatrices();
@@ -311,7 +314,7 @@ void display(void)
 	glUseProgram(shaderProgram2);
 
 	updateShadowMatrices();
-	gm->draw();
+	gms.back().draw();
 	glTranslatef(0, 0, 1);
 	glScalef(2, 2, 0.1);
 	updateShadowMatrices();

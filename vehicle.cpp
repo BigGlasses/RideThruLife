@@ -6,11 +6,11 @@
 #include <algorithm>
 #include <fstream>
 
-#include "vehicle.hpp"
+#include "Vehicle.hpp"
 #include "GameModel.hpp"
 
 //Gaint constructor, sorry
-vehicle::vehicle(float Inx, float Iny, float Inz, float Inacceleration, float Inturning, float Inbrakes, float InfuelEfficency, bool InisBoat, GameModel InModel)
+Vehicle::Vehicle(float Inx, float Iny, float Inz, float Inacceleration, float Inturning, float Inbrakes, float InfuelEfficency, bool InisBoat, GameModel InModel)
 {
 	x = Inx;
 	y = Iny;
@@ -24,90 +24,90 @@ vehicle::vehicle(float Inx, float Iny, float Inz, float Inacceleration, float In
 }
 
 //Many accessors
-float vehicle::getX()
+float Vehicle::getX()
 {
 	return x;
 }
 
-float vehicle::getY()
+float Vehicle::getY()
 {
 	return y;
 }
 
-float vehicle::getZ()
+float Vehicle::getZ()
 {
 	return z;
 }
 
-float vehicle::getSpeedX()
+float Vehicle::getSpeedX()
 {
 	return speedX;
 }
 
-float vehicle::getSpeedY()
+float Vehicle::getSpeedY()
 {
 	return speedY;
 }
 
-float vehicle::getSpeedZ()
+float Vehicle::getSpeedZ()
 {
 	return speedZ;
 }
 
-float vehicle::getAcceleration()
+float Vehicle::getAcceleration()
 {
 	return acceleration;
 }
 
-float vehicle::getTurning()
+float Vehicle::getTurning()
 {
 	return turning;
 }
 
-float vehicle::getBrakes()
+float Vehicle::getBrakes()
 {
 	return brakes;
 }
 
-float vehicle::getfuelEfficency()
+float Vehicle::getfuelEfficency()
 {
 	return fuelEfficency;
 }
 
-bool vehicle::getBoat()
+bool Vehicle::getBoat()
 {
 	return isBoat;
 }
 
-float vehicle::getRotation()
+float Vehicle::getRotation()
 {
 	return rotation;
 }
 
-float vehicle::getTilt()
+float Vehicle::getTilt()
 {
 	return tilt;
 }
 
-float vehicle::getRoll()
+float Vehicle::getRoll()
 {
 	return roll;
 }
 
-GameModel vehicle::getModel()
+GameModel Vehicle::getModel()
 {
 	return model;
 }
 
 //Set accelereating
-void vehicle::accelerate(bool state)
+void Vehicle::accelerate(bool state)
 {
 	isAccelerating = state;
 }
 
 //Rotate, true for positive false for negitave
 //Rotation is 0-360.  Assuming this would be used on the x-Plane.  Don't know if we want other rotations? (y,z)?
-void vehicle::turn(bool direction)
+void Vehicle::turn(bool direction)
 {
 	if(direction)
 		rotation += turning;
@@ -121,7 +121,7 @@ void vehicle::turn(bool direction)
 			rotation = rotation + 360;
 }
 
-void vehicle::ChangeTilt(bool direction, float mag)
+void Vehicle::ChangeTilt(bool direction, float mag)
 {
 	if(direction)
 		tilt += mag;
@@ -134,7 +134,7 @@ void vehicle::ChangeTilt(bool direction, float mag)
 			tilt = tilt + 360;
 }
 
-void vehicle::ChangeRoll(bool direction, float mag)
+void Vehicle::ChangeRoll(bool direction, float mag)
 {
 	if(direction)
 		roll += mag;
@@ -148,12 +148,12 @@ void vehicle::ChangeRoll(bool direction, float mag)
 }
 
 //Set braking
-void vehicle::brake(bool state)
+void Vehicle::brake(bool state)
 {
 	isBraking = state;
 }
 
-void vehicle::update()
+void Vehicle::update()
 {
 	//Updates speeds
 	if(isAccelerating)

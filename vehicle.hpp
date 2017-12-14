@@ -14,9 +14,9 @@
 #include "GameModel.hpp"
 
 
-class vehicle{
+class Vehicle{
 	public:
-		vehicle(float Inx, float Iny, float Inz, float acceleration, float turning, float brakes, float fuelEfficency, bool isBoat, GameModel Inmodel);
+		Vehicle(float Inx, float Iny, float Inz, float acceleration, float turning, float brakes, float fuelEfficency, bool isBoat, GameModel Inmodel);
 		void update();
 		void accelerate(bool state);
 		void turn(bool direction);
@@ -58,6 +58,8 @@ class vehicle{
 		bool isBraking = false;
 		GameModel model;
 };
+
+
 
 
 #endif

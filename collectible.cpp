@@ -6,12 +6,12 @@
 #include <algorithm>
 #include <fstream>
 
-#include "collectible.hpp"
+#include "Collectible.hpp"
 #include "GameModel.hpp"
 
 //lifeTime = 0;
 
-collectible::collectible(float Inx, float Iny, float Inz, int life, GameModel Inmodel)
+Collectible::Collectible(float Inx, float Iny, float Inz, int life, GameModel Inmodel)
 {
 	x = Inx;
 	y = Iny;
@@ -20,27 +20,27 @@ collectible::collectible(float Inx, float Iny, float Inz, int life, GameModel In
 	model = Inmodel;
 }
 
-float collectible::getX()
+float Collectible::getX()
 {
 	return x;
 }
 
-float collectible::getY()
+float Collectible::getY()
 {
 	return y;
 }
 
-float collectible::getZ()
+float Collectible::getZ()
 {
 	return z;
 }
 
-GameModel collectible::getModel()
+GameModel Collectible::getModel()
 {
 	return model;
 }
 
-bool collectible::canBeCollected(float Inx, float Iny, float Inz)
+bool Collectible::canBeCollected(float Inx, float Iny, float Inz)
 {
 	float threshold = 0.1;
 	float dx = Inx - x;
@@ -51,7 +51,7 @@ bool collectible::canBeCollected(float Inx, float Iny, float Inz)
 	return distance < threshold * threshold;
 }
 
-bool collectible::isClose(float Inx, float Iny, float Inz)
+bool Collectible::isClose(float Inx, float Iny, float Inz)
 {
 	float threshold = 10.0;
 	float dx = Inx - x;
@@ -62,7 +62,7 @@ bool collectible::isClose(float Inx, float Iny, float Inz)
 	return distance < threshold * threshold;
 }
 
-void collectible::update()
+void Collectible::update()
 {
 	lifeTime -= 1;
 	if(lifeTime <= 0)

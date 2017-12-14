@@ -1,5 +1,5 @@
-#ifndef COLLECTIBLE_H
-#define COLLECTIBLE_H
+#ifndef Collectible_H
+#define Collectible_H
 
 #include "OpenGLImports.hpp"
 
@@ -13,9 +13,9 @@
 
 #include "GameModel.hpp"
 
-class collectible{
+class Collectible{
 	public:
-		collectible(float Inx, float Iny, float Inz, int life, GameModel Inmodel);
+		Collectible(float Inx, float Iny, float Inz, int life, GameModel Inmodel);
 		bool canBeCollected(float Inx, float Iny, float Inz);
 		bool isClose(float Inx, float Iny, float Inz);
 		void update();
