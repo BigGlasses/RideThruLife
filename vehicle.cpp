@@ -9,11 +9,12 @@
 #include "Vehicle.hpp"
 #include "GameModel.hpp"
 #include "GameData.hpp"
+#define PI 3.14159265
+
 
 //Gaint constructor, sorry
 Vehicle::Vehicle(){}
-Vehicle::Vehicle(float Inx, float Iny, float Inz, float Inacceleration, float Inturning, float Inbrakes, float InfuelEfficency, bool InisBoat, GameModel InModel)
-{
+Vehicle::Vehicle(float Inx, float Iny, float Inz, float Inacceleration, float Inturning, float Inbrakes, float InfuelEfficency, bool InisBoat, GameModel InModel){
 	x = Inx;
 	y = Iny;
 	z = Inz;
@@ -157,23 +158,38 @@ void Vehicle::ChangeRoll(bool direction, float mag)
 }
 
 //Set braking
-void Vehicle::brake(bool state)
-{
+void Vehicle::brake(bool state){
 	isBraking = state;
 }
 
-void Vehicle::update()
-{
+float Vehicle::getTrailX(int i){
+	return trail[(trailIndex + i) % vehicleTrailLength][0];
+}
+
+float Vehicle::getTrailY(int i){
+	return trail[(trailIndex + i) % vehicleTrailLength][1];
+}
+
+float Vehicle::getTrailZ(int i){
+	return trail[(trailIndex + i) % vehicleTrailLength][2];
+}
+
+void Vehicle::update(){
+	trail[trailIndex][0] = x;
+	trail[trailIndex][1] = y;
+	trail[trailIndex][2] = z;
+	trailIndex = (trailIndex + 1) % vehicleTrailLength;
+
 	//Updates speeds
 	if(isAccelerating)
 	{
-		speedX += sin(rotation) * acceleration/10.0;
-		speedZ += cos(rotation) * acceleration/10.0;
+		speedX += sin(rotation * PI / 180.0 ) * acceleration/10.0;
+		speedZ += cos(rotation * PI / 180.0 ) * acceleration/10.0;
 	}
 	if(isBraking)
 	{
-		speedX -= sin(rotation) * brakes/10.0;
-		speedZ -= cos(rotation) * brakes/10.0;
+		speedX -= sin(rotation * PI / 180.0 ) * brakes/10.0;
+		speedZ -= cos(rotation * PI / 180.0 ) * brakes/10.0;
 	}
 	speedX *= 0.9; //drag
 	speedZ *= 0.9; //drag
@@ -185,6 +201,7 @@ void Vehicle::update()
 }
 
 void Vehicle::draw(){
+	glTranslatef(x, y, z);
 	glRotatef(rotation, 0, 1.0, 0);
 	updateMatrices();
 	model.draw();

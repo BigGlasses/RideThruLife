@@ -40,6 +40,9 @@ class Vehicle{
 		float getTilt();
 		float getRoll();
 		void shouldTurn(bool val);
+		float getTrailX(int i);
+		float getTrailY(int i);
+		float getTrailZ(int i);
 		GameModel getModel();
 
 	private:
@@ -60,6 +63,10 @@ class Vehicle{
 		bool isAccelerating = false;
 		bool isBraking = false;
 		bool isTurning = false;
+		static const int vehicleTrailLength = 120;
+		int trailIndex = 0;
+		float trail[vehicleTrailLength][3];
+
 		GameModel model;
 };
 

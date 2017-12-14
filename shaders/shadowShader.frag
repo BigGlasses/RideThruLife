@@ -15,9 +15,9 @@ out vec4 outputF;
  
 void main()
 {
-	float bias = 0.005;
+	float bias = 0.000;
 	float visibility = 1.0;
-    vec3 lightPosition = vec3(5, 5, 5);
+  vec3 lightPosition = vec3(5, 5, 5);
 	if ( texture( shadowTexture, ShadowCoord.xy ).z  <  ShadowCoord.z-bias){
 	    visibility = 0.5;
 	}
@@ -34,11 +34,11 @@ void main()
    Idiff = clamp(Idiff, 0.0, 1.0);
    
    // calculate Specular Term:
-   vec3 Ispec = specular * pow(max(dot(R,E),0.0),0.3*shiny);
+   vec3 Ispec = specular * pow(max(dot(R,E),0.0), 0.3*shiny);
    Ispec = clamp(Ispec, 0.0, 1.0);
 
    // write Total Color:  
-   outputF = vec4( Iamb + Idiff + Ispec * 0.25, 1.0);
+   outputF = vec4( (Iamb + Idiff + Ispec * 0.25) * visibility, 1.0);
 
 
 

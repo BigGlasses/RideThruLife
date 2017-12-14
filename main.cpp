@@ -16,12 +16,12 @@
 #include "vehicleselect.hpp"
 #include "vehicle.hpp"
 
+#define PI 3.14159265
 
 //Constants
 const int GAMESTATE_VEHICLESELECT = 0;
 const int GAMESTATE_START_GAME = 1;
 const int GAMESTATE_STARTED_GAME = 2;
-
 int gamestate = GAMESTATE_VEHICLESELECT;
 
 
@@ -50,6 +50,7 @@ objLoader objLoading;
 Camera cam;
 VehicleSelect vs;
 Vehicle vehicle;
+GameModel levelplain;
 
 bool* keyStates = new bool[256]; // Create an array of boolean values of length 256 (0-255)
 
@@ -88,9 +89,13 @@ keyStates[key] = false; // Set the state of the current key to not pressed
 
 // Updates the camera position to reflect the yaw, pitch.
 void updateCamera(){
-	camPos[0] = vehicle.getX() + 16.0 * cos(yaw);
-	camPos[1] = vehicle.getY() + 16.0 * sin(pitch);
-	camPos[2] = vehicle.getZ() + 16.0 * sin(yaw);
+	camPos[0] = vehicle.getTrailX(100) - 10 * sin(vehicle.getRotation()* PI / 180.0 );
+	camPos[1] = vehicle.getTrailY(100) + 10;
+	camPos[2] = vehicle.getTrailZ(100) - 10	 * cos(vehicle.getRotation()* PI / 180.0 );
+
+	lightPos[0] = vehicle.getX() + 25;
+	lightPos[1] = vehicle.getY() + 25;
+	lightPos[2] = vehicle.getZ() + 25;
 
 	camDir[0] = - camPos[0] + 16.0 * cos(yaw);
 	camDir[1] = - camPos[1] + 16.0 * sin(pitch);
@@ -171,9 +176,9 @@ void keyOperations (void) {
 
 		vehicle.shouldTurn(true);
 		if (keyStates['a'])
-			vehicle.turn(false);
-		else if (keyStates['d'])
 			vehicle.turn(true);
+		else if (keyStates['d'])
+			vehicle.turn(false);
 		else vehicle.shouldTurn(false);
 	}
 }  
@@ -196,6 +201,7 @@ void init(void)
 	glLoadIdentity();
 	loadAssets();
 	vs.init();
+	levelplain = GameModel(std::string("level"));
 
 }
 
@@ -232,13 +238,18 @@ void display(void)
 	glClearColor(0, 0, 0, 0);
 	glBindFramebuffer(GL_FRAMEBUFFER, shadowFBO);
 	glClear( GL_DEPTH_BUFFER_BIT );
-	glOrtho(-10, 10, -10, 10, 1, 40);
-	gluLookAt(lightPos[0], lightPos[1], lightPos[2], 0, 0, 0, 0, 1, 0);
+	glOrtho(-25, 25, -25, 25, 1, 50);
+	gluLookAt(lightPos[0], lightPos[1], lightPos[2], vehicle.getX(), vehicle.getY(), vehicle.getZ(), 0, 1, 0);
 	glUseProgram(shaderProgram1);
 	
 	updateMatrices();
+	glPushMatrix();
+	glScalef(20, 1, 20);
+	updateMatrices();
+	levelplain.draw();
+	glPopMatrix();
+	updateMatrices();
 	vehicle.draw();
-	gms[0].draw();
 	glTranslatef(0, 0, 1);
 	glScalef(2, 2, 0.1);
 	updateMatrices();
@@ -247,8 +258,8 @@ void display(void)
 
 	//Retain the basic light transformations, for the shadow pass
 	glLoadIdentity();
-	glOrtho(-10, 10, -10, 10, 1, 40);
-	gluLookAt(lightPos[0], lightPos[1], lightPos[2], 0, 0, 0, 0, 1, 0);
+	glOrtho(-25, 25, -25, 25, 1, 50);
+	gluLookAt(lightPos[0], lightPos[1], lightPos[2], vehicle.getX(), vehicle.getY(), vehicle.getZ(), 0, 1, 0);
 	updateMatrices();
 	
 	glUseProgram(0);
@@ -268,7 +279,7 @@ void display(void)
 	glClearColor(0, 0, 0, 0);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-	gluPerspective(90, float(WINDOWX)/WINDOWY, 1, 40);
+	gluPerspective(90, float(WINDOWX)/WINDOWY, 1, 50);
 	gluLookAt(camPos[0], camPos[1], camPos[2], vehicle.getX(), vehicle.getY(), vehicle.getZ(), 0, 1, 0);
 	//cam.updateView();
 
@@ -276,12 +287,13 @@ void display(void)
 	glUseProgram(shaderProgram2);
 
 	updateMatrices();
-	vehicle.draw();
-	gms[0].draw();
-	glTranslatef(0, 0, 1);
-	glScalef(2, 2, 0.1);
+	glPushMatrix();
+	glScalef(20, 1, 20);
 	updateMatrices();
-	//gm->draw();
+	levelplain.draw();
+	glPopMatrix();
+	updateMatrices();	
+	vehicle.draw();
 	
 	glUseProgram(0);
 
