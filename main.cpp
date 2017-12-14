@@ -25,16 +25,10 @@ float lightPos[] = {5, 5, 5};
 
 int gamestate = GAMESTATE_VEHICLESELECT;
 
-//Window size
-int WINDOWX = 800;
-int WINDOWY = 800;
-
 
 //State variables
 float yaw = 0;
 float pitch = 0;
-float timePassed;
-int FPS = 60;
 
 GLuint screenTexture;
 GLuint screenDepthTexture;
@@ -43,36 +37,19 @@ GLuint screenFBO;
 GLuint shadowTexture;
 GLuint shadowFBO;
 
-GLuint shaderProgram1;
-GLuint shaderProgram2;
 
-GLuint mvMatrixLoc;
-GLuint pMatrixLoc;
-GLuint mvMatrixShadowLoc;
-GLuint pMatrixShadowLoc;
-GLuint mvMatrixLightLoc;
-GLuint pMatrixLightLoc;
-
-GLuint normalTexLoc;
-GLuint shadowTexLoc;
-
-GLuint timeLoc;
-GLfloat  modelViewMatrix[16]; 
-GLfloat  projectionMatrix[16]; 
-GLfloat  modelViewLightMatrix[16]; 
-GLfloat  projectionLightMatrix[16]; 
-GLfloat  biasMatrix[16] = {
-0.5, 0.0, 0.0, 0.0,
-0.0, 0.5, 0.0, 0.0,
-0.0, 0.0, 0.5, 0.0,
-0.5, 0.5, 0.5, 1.0}
-; 
+// GLfloat  biasMatrix[16] = {
+// 0.5, 0.0, 0.0, 0.0,
+// 0.0, 0.5, 0.0, 0.0,
+// 0.0, 0.0, 0.5, 0.0,
+// 0.5, 0.5, 0.5, 1.0}
+// ; 
 
 
-shaderLoader shaderLoading;
 textureLoader textureLoading;
 objLoader objLoading;
 Camera cam;
+VehicleSelect vs;
 
 
 // Updates the camera position to reflect the yaw, pitch.
@@ -141,36 +118,6 @@ void prepareScreen(){
 	 glBindFramebuffer(GL_FRAMEBUFFER, 0);
 	}
 
-//Prepares the shader.
-	void prepareShaders(){
-		shaderProgram1 = glCreateProgram();
-		GLuint vertexShader = shaderLoading.loadShaderFromFile( "shaders/testshader.vert", GL_VERTEX_SHADER );
-		glAttachShader( shaderProgram1, vertexShader );
-		GLuint fragmentShader = shaderLoading.loadShaderFromFile( "shaders/testshader.frag", GL_FRAGMENT_SHADER );
-		glAttachShader( shaderProgram1, fragmentShader );
-		glLinkProgram( shaderProgram1 );
-
-		shaderProgram2 = glCreateProgram();
-		vertexShader = shaderLoading.loadShaderFromFile( "shaders/shadowShader.vert", GL_VERTEX_SHADER );
-		glAttachShader( shaderProgram2, vertexShader );
-		fragmentShader = shaderLoading.loadShaderFromFile( "shaders/shadowShader.frag", GL_FRAGMENT_SHADER );
-		glAttachShader( shaderProgram2, fragmentShader );
-		glLinkProgram( shaderProgram2 );
-
-
-
-    //Get uniforms
-		mvMatrixLoc = glGetUniformLocation(shaderProgram1, "mvMatrix");
-		pMatrixLoc = glGetUniformLocation(shaderProgram1, "pMatrix");
-		timeLoc = glGetUniformLocation(shaderProgram1, "time");
-		mvMatrixShadowLoc = glGetUniformLocation(shaderProgram2, "mvMatrix");
-		pMatrixShadowLoc = glGetUniformLocation(shaderProgram2, "pMatrix");
-		mvMatrixLightLoc = glGetUniformLocation(shaderProgram2, "mvLightMatrix");
-		pMatrixLightLoc = glGetUniformLocation(shaderProgram2, "pLightMatrix");
-		normalTexLoc = glGetUniformLocation(shaderProgram2, "normalTexture");
-		shadowTexLoc = glGetUniformLocation(shaderProgram2, "shadowTexture");
-
-	}
 
 
 //GLUT keyboard functions
@@ -219,6 +166,7 @@ void init(void)
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
 	loadAssets();
+	vs.init();
 
 }
 
@@ -231,28 +179,6 @@ void prepareDisplay(void){
 	prepareShaders();
 }
 
-//Updates the modelview and projection matrix variables.
-void updateShadowMatrices(){
-	glGetFloatv(GL_PROJECTION_MATRIX, projectionMatrix);
-	glGetFloatv(GL_MODELVIEW_MATRIX, modelViewMatrix);  
-	glUniformMatrix4fv(mvMatrixShadowLoc,  1, GL_FALSE, modelViewMatrix);
-	glUniformMatrix4fv(pMatrixShadowLoc,  1, GL_FALSE, projectionMatrix);
-	glUniformMatrix4fv(mvMatrixLightLoc,  1, GL_FALSE, modelViewLightMatrix);
-	glUniformMatrix4fv(pMatrixLightLoc,  1, GL_FALSE, projectionLightMatrix);
-	glUniform1f(timeLoc, timePassed);
-	glUniform1i(normalTexLoc, 0);
-	glUniform1i(shadowTexLoc, 1);
-}
-
-//Updates the modelview and projection matrix variables.
-void updateLightMatrices(){
-	glGetFloatv(GL_PROJECTION_MATRIX, projectionLightMatrix);
-	glGetFloatv(GL_MODELVIEW_MATRIX, modelViewLightMatrix);  
-	glUniformMatrix4fv(mvMatrixLoc,  1, GL_FALSE, modelViewLightMatrix);
-	glUniformMatrix4fv(pMatrixLoc,  1, GL_FALSE, projectionLightMatrix);
-	glUniform1f(timeLoc, timePassed);
-}
-
 //Renders the scene
 void renderScene(void){
 
@@ -262,6 +188,12 @@ void renderScene(void){
 void display(void)
 {
 	//flush out to single buffer
+	if (gamestate == GAMESTATE_VEHICLESELECT){
+		vs.draw();
+		vs.update();
+	}
+	else{
+
 	glLoadIdentity();
 	glEnable(GL_DEPTH_TEST);
 	
@@ -352,15 +284,12 @@ void display(void)
 	glDisable(GL_TEXTURE_2D);
 	//renderScene();
 	glBindTexture(GL_TEXTURE_2D, 0);
+	}
 	glutSwapBuffers();
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 }
 
 
-void tickTime(){
-	timePassed += 1/((float)FPS);
-	while ( timePassed > 1 ) timePassed -= 1;
-}
 
 void FPSUpdate(int i){
 	glutTimerFunc(1000/FPS, FPSUpdate , 0);

@@ -36,7 +36,7 @@ run: $(PROGRAM_NAME)
 #ie. boilerplateClass.o and yourFile.o
 #make will automatically know that the objectfile needs to be compiled
 #form a cpp source file and find it itself :)
-$(PROGRAM_NAME): shaderLoader.o textureLoader.o objLoader.o GameModel.o collectible.o camera.o vehicle.o GameData.o main.o
+$(PROGRAM_NAME): shaderLoader.o textureLoader.o objLoader.o GameModel.o collectible.o camera.o vehicle.o vehicleselect.o GameData.o main.o
 	$(CC) -o $@ $^ $(CFLAGS) $(LDFLAGS)
 
 clean:

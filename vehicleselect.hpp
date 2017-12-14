@@ -12,16 +12,23 @@
 #include <fstream>
 
 #include "GameModel.hpp"
+#include "GameData.hpp"
+#include "textureLoader.hpp"
 
 
 class VehicleSelect{
 	public:
-		Vehicle(float Inx, float Iny, float Inz, float acceleration, float turning, float brakes, float fuelEfficency, bool isBoat, GameModel Inmodel);
+		VehicleSelect();
 		void draw();
+		void init();
+		void update();
 		void keyboard(unsigned char key, int xIn, int yIn);
 
 	private:
-		int vehicleIndex;
+		int vehicleIndex = 0;
+		int rotation = 0;
+		GLuint background;
+
 };
 
 
