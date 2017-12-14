@@ -22,6 +22,8 @@ GLuint pMatrixLightLoc;
 
 GLuint normalTexLoc;
 GLuint shadowTexLoc;
+GLuint camDirLoc;
+GLuint lightDirLoc;
 
 GLuint timeLoc;
 GLfloat  modelViewMatrix[16]; 
@@ -29,8 +31,13 @@ GLfloat  projectionMatrix[16];
 GLfloat  modelViewLightMatrix[16]; 
 GLfloat  projectionLightMatrix[16]; 
 
+float camPos[] = {0, 0, 3.42f};	//where the camera is
+float lightPos[] = {5, 5, 5};
+float camDir[] = {1, 1, 1};
+
 shaderLoader shaderLoading;
 float timePassed = 0;
+const int vehicleNum = 6;
 int FPS = 60;
 //Window size
 int WINDOWX = 1280;
@@ -47,7 +54,6 @@ void loadAssets(){
 	vehicleNames.push_back("christmas_tree");
 	vehicleNames.push_back("balloon");
 	vehicleNames.push_back("bike");
-	vehicleNames.push_back("balloon");
 	vehicleNames.push_back("grill");
 
 
@@ -86,6 +92,8 @@ void loadAssets(){
 		pMatrixLightLoc = glGetUniformLocation(shaderProgram2, "pLightMatrix");
 		normalTexLoc = glGetUniformLocation(shaderProgram2, "normalTexture");
 		shadowTexLoc = glGetUniformLocation(shaderProgram2, "shadowTexture");
+		normalTexLoc = glGetUniformLocation(camDirLoc, "lightDir");
+		shadowTexLoc = glGetUniformLocation(lightDirLoc, "camDir");
 
 	}
 
@@ -102,6 +110,8 @@ void updateShadowMatrices(){
 	glUniform1f(timeLoc, timePassed);
 	glUniform1i(normalTexLoc, 0);
 	glUniform1i(shadowTexLoc, 1);
+	glUniform3f(camDirLoc, camDir[0], camDir[1], camDir[1]);
+	glUniform3f(lightDirLoc, 1, -1, 1);
 }
 
 //Updates the modelview and projection matrix variables.

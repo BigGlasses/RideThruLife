@@ -20,7 +20,7 @@
 
 extern std::vector<GameModel> gms;
 extern std::vector<std::string> vehicleNames; 
-const int vehicleNum = 7;
+extern const int vehicleNum;
 extern float timePassed;
 extern int FPS;
 //Window size
@@ -56,6 +56,11 @@ extern GLfloat  modelViewMatrix[16];
 extern GLfloat  projectionMatrix[16]; 
 extern GLfloat  modelViewLightMatrix[16]; 
 extern GLfloat  projectionLightMatrix[16]; 
+extern GLuint camDirLoc;
+extern GLuint lightDirLoc;
+extern float camPos[];	//where the camera is
+extern float lightPos[];
+extern float camDir[]; 
 
 
 

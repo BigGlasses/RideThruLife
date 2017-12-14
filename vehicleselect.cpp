@@ -55,24 +55,28 @@ void VehicleSelect::draw(){
 
 	gluPerspective(90, 1280.0/720, 1, 40);
 	gluLookAt(0, 5, -10, 0, 0, 0, 0, 1, 0);
+	camDir[0] = 0;
+	camDir[1] = -4;
+	camDir[2] = 10;
 
 	glUseProgram(shaderProgram2);
-	glTranslatef(-vehicleIndex, 0, 0);
+	glTranslatef(vehicleIndex*10, 0, 0);
 	updateLightMatrices();
 	updateShadowMatrices();
 	for (int i = 0; i < vehicleNum; i++){
-		glTranslatef(1, 0, 0);
 		if (i == vehicleIndex){
-			glPushMatrix();
+			//glPushMatrix();
 			glRotatef(rotation, 0, 1.0, 0);
 			updateShadowMatrices();
 			gms[i].draw();
-			glPopMatrix();
+			glRotatef(-rotation, 0, 1.0, 0);
+			//glPopMatrix();
 		}
 		else{
 			updateShadowMatrices();
 			gms[i].draw();
 		}
+		glTranslatef(-10, 0, 0);
 	}
 	glUseProgram(0);
 
@@ -88,11 +92,13 @@ void VehicleSelect::keyboard(unsigned char key, int xIn, int yIn)
 	switch (key)
 	{
 		case 'a':
-		vehicleIndex = (vehicleIndex - 1)%vehicleNum;
+		vehicleIndex -= 1;
+		if (vehicleIndex < 0) vehicleIndex = 0;
 		break;
 
 		case 'd':
-		vehicleIndex = (vehicleIndex + 1)%vehicleNum;
+		vehicleIndex += 1;
+		if (vehicleIndex >= vehicleNum) vehicleIndex = vehicleNum - 1;
 		break;
 	}
 }

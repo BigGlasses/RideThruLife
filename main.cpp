@@ -20,8 +20,6 @@
 const int GAMESTATE_VEHICLESELECT = 0;
 const int GAMESTATE_START_GAME = 1;
 const int GAMESTATE_STARTED_GAME = 2;
-float camPos[] = {0, 0, 3.42f};	//where the camera is
-float lightPos[] = {5, 5, 5};
 
 int gamestate = GAMESTATE_VEHICLESELECT;
 
@@ -123,6 +121,7 @@ void prepareScreen(){
 //GLUT keyboard functions
 	void keyboard(unsigned char key, int xIn, int yIn)
 	{
+		vs.keyboard(key, xIn, yIn);
 		// cam.keyPressed(key);
 		switch (key)
 		{
