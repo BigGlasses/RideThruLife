@@ -37,7 +37,7 @@ float camDir[] = {1, 1, 1};
 
 shaderLoader shaderLoading;
 float timePassed = 0;
-const int vehicleNum = 6;
+const int vehicleNum = 8;
 int FPS = 60;
 //Window size
 int WINDOWX = 1280;
@@ -56,6 +56,8 @@ void loadAssets(){
 	vehicleNames.push_back("balloon");
 	vehicleNames.push_back("bike");
 	vehicleNames.push_back("grill");
+	vehicleNames.push_back("hot_air_balloon");
+	vehicleNames.push_back("row_boat");
 
 
 	for (int i=0; i < vehicleNames.size(); i++) {
@@ -93,8 +95,8 @@ void loadAssets(){
 		pMatrixLightLoc = glGetUniformLocation(shaderProgram2, "pLightMatrix");
 		normalTexLoc = glGetUniformLocation(shaderProgram2, "normalTexture");
 		shadowTexLoc = glGetUniformLocation(shaderProgram2, "shadowTexture");
-		normalTexLoc = glGetUniformLocation(camDirLoc, "lightDir");
-		shadowTexLoc = glGetUniformLocation(lightDirLoc, "camDir");
+		lightDirLoc = glGetUniformLocation(camDirLoc, "lightDir");
+		camDirLoc = glGetUniformLocation(lightDirLoc, "camDir");
 
 	}
 

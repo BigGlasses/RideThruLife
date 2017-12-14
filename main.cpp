@@ -238,7 +238,7 @@ void display(void)
 	glClearColor(0, 0, 0, 0);
 	glBindFramebuffer(GL_FRAMEBUFFER, shadowFBO);
 	glClear( GL_DEPTH_BUFFER_BIT );
-	glOrtho(-25, 25, -25, 25, 1, 50);
+	glOrtho(-25, 25, -25, 25, 1, 80);
 	gluLookAt(lightPos[0], lightPos[1], lightPos[2], vehicle.getX(), vehicle.getY(), vehicle.getZ(), 0, 1, 0);
 	glUseProgram(shaderProgram1);
 	
@@ -258,7 +258,7 @@ void display(void)
 
 	//Retain the basic light transformations, for the shadow pass
 	glLoadIdentity();
-	glOrtho(-25, 25, -25, 25, 1, 50);
+	glOrtho(-25, 25, -25, 25, 1, 80);
 	gluLookAt(lightPos[0], lightPos[1], lightPos[2], vehicle.getX(), vehicle.getY(), vehicle.getZ(), 0, 1, 0);
 	updateMatrices();
 	
@@ -279,7 +279,7 @@ void display(void)
 	glClearColor(0, 0, 0, 0);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-	gluPerspective(90, float(WINDOWX)/WINDOWY, 1, 50);
+	gluPerspective(90, float(WINDOWX)/WINDOWY, 1, 60);
 	gluLookAt(camPos[0], camPos[1], camPos[2], vehicle.getX(), vehicle.getY(), vehicle.getZ(), 0, 1, 0);
 	//cam.updateView();
 
@@ -344,7 +344,7 @@ void FPSUpdate(int i){
 	if (gamestate == GAMESTATE_VEHICLESELECT && vs.selected()){
 		gamestate = GAMESTATE_STARTED_GAME;
 		GameModel m = GameModel(vs.selectedVehicleName());
-		vehicle = Vehicle(0, 0, 0, 1.0, 1.0, 1.0, 1.0, false, m);
+		vehicle = Vehicle(0, 0, 0, 1.0, 2.0, 1.0, 1.0, false, m);
 	}
 	if (gamestate == GAMESTATE_STARTED_GAME){
 		gameLoop();
