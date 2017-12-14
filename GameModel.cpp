@@ -27,7 +27,7 @@ GameModel::GameModel(){
 }
 
 GameModel::GameModel(std::string title){
-	this->title = title;
+	this->title = title + "";
 	this->textureID = tl.loadTexture(title + ".bmp");
 	int *n = new int[1];
 

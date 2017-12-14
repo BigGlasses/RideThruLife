@@ -26,6 +26,7 @@ extern int FPS;
 //Window size
 extern int WINDOWX;
 extern int WINDOWY;
+extern bool updateLights;
 
 void loadAssets();
 
@@ -36,6 +37,9 @@ void updateShadowMatrices();
 void updateLightMatrices();
 
 void tickTime();
+void updateMatrices();
+void focusOnShadows();
+void focusOnLights();
 
 extern shaderLoader shaderLoading;
 extern GLuint shaderProgram1;

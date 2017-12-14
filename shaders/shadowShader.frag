@@ -27,7 +27,7 @@ void main()
    	vec3 R = normalize(-reflect(L,normal));  
  
    //calculate Ambient Term:  
-   vec3 Iamb = vec3(0, 0, 0);
+   vec3 Iamb = vec3(0.25, 0.25, 0);
 
    //calculate Diffuse Term:  
    vec3 Idiff = Color * texture(normalTexture, texCoord).rgb * max(dot(normal,L), 0.0);

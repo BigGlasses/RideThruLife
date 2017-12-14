@@ -14,6 +14,7 @@
 #include "GameModel.hpp"
 #include "camera.hpp"
 #include "vehicleselect.hpp"
+#include "vehicle.hpp"
 
 
 //Constants
@@ -48,13 +49,52 @@ textureLoader textureLoading;
 objLoader objLoading;
 Camera cam;
 VehicleSelect vs;
+Vehicle vehicle;
+
+bool* keyStates = new bool[256]; // Create an array of boolean values of length 256 (0-255)
+
+void keyPressed (unsigned char key, int x, int y) {  
+		vs.keyboard(key, x, y);
+		// cam.keyPressed(key);
+		switch (key)
+		{
+			case 'q':
+			case 27:	//27 is the esc key
+			exit(0); 
+			break;
+			case 'd':
+			break;
+			case 'j':
+			yaw += 0.1;
+			break;
+			case 'l':
+			yaw -= 0.1;
+			break;
+			case 'i':
+			pitch += 0.1;
+			break;
+			case 'k':
+			pitch -= 0.1;
+			break;
+	}
+
+	keyStates[key] = true; // Set the state of the current key to pressed  
+}  
+
+void keyUp (unsigned char key, int x, int y) {  
+keyStates[key] = false; // Set the state of the current key to not pressed  
+}  
 
 
 // Updates the camera position to reflect the yaw, pitch.
 void updateCamera(){
-	camPos[0] = 16.0 * cos(yaw);
-	camPos[1] = 16.0 * sin(pitch);
-	camPos[2] = 16.0 * sin(yaw);
+	camPos[0] = vehicle.getX() + 16.0 * cos(yaw);
+	camPos[1] = vehicle.getY() + 16.0 * sin(pitch);
+	camPos[2] = vehicle.getZ() + 16.0 * sin(yaw);
+
+	camDir[0] = - camPos[0] + 16.0 * cos(yaw);
+	camDir[1] = - camPos[1] + 16.0 * sin(pitch);
+	camDir[2] = - camPos[2] + 16.0 * sin(yaw);
 }
 
 
@@ -118,36 +158,26 @@ void prepareScreen(){
 
 
 
-//GLUT keyboard functions
-	void keyboard(unsigned char key, int xIn, int yIn)
-	{
-		vs.keyboard(key, xIn, yIn);
-		// cam.keyPressed(key);
-		switch (key)
-		{
-			case 'q':
-			case 27:	//27 is the esc key
-			exit(0); 
-			break;
-			case 'd':
-			break;
-			case 'j':
-			yaw += 0.1;
-			break;
-			case 'l':
-			yaw -= 0.1;
-			break;
-			case 'i':
-			pitch += 0.1;
-			break;
-			case 'k':
-			pitch -= 0.1;
-			break;
-			case 'p':
-			gms.pop_back();
-			break;
+
+void keyOperations (void) {  
+	if (GAMESTATE_STARTED_GAME){
+		if (keyStates['w'])
+			vehicle.accelerate(true);
+		else vehicle.accelerate (false);
+
+		if (keyStates['s'])
+				vehicle.brake(true);
+		else vehicle.brake (false);
+
+		vehicle.shouldTurn(true);
+		if (keyStates['a'])
+			vehicle.turn(false);
+		else if (keyStates['d'])
+			vehicle.turn(true);
+		else vehicle.shouldTurn(false);
 	}
-}
+}  
+
 
 void mouseMove(int x, int y){
 	//cam.mouseMove( x, y, WINDOWX, WINDOWY);
@@ -197,6 +227,7 @@ void display(void)
 	glEnable(GL_DEPTH_TEST);
 	
 	glDisable(GL_TEXTURE);
+	focusOnLights();
 	//First Pass (shadows)
 	glClearColor(0, 0, 0, 0);
 	glBindFramebuffer(GL_FRAMEBUFFER, shadowFBO);
@@ -205,11 +236,12 @@ void display(void)
 	gluLookAt(lightPos[0], lightPos[1], lightPos[2], 0, 0, 0, 0, 1, 0);
 	glUseProgram(shaderProgram1);
 	
-	updateLightMatrices();
-	gms.back().draw();
+	updateMatrices();
+	vehicle.draw();
+	gms[0].draw();
 	glTranslatef(0, 0, 1);
 	glScalef(2, 2, 0.1);
-	updateLightMatrices();
+	updateMatrices();
 	//gm->draw();
 
 
@@ -217,14 +249,13 @@ void display(void)
 	glLoadIdentity();
 	glOrtho(-10, 10, -10, 10, 1, 40);
 	gluLookAt(lightPos[0], lightPos[1], lightPos[2], 0, 0, 0, 0, 1, 0);
-	updateLightMatrices();
+	updateMatrices();
 	
 	glUseProgram(0);
 	//renderScene();// First Pass
 
-
+	focusOnShadows();
 	//Second pass
-	updateCamera();
 	glLoadIdentity();
 	glBindFramebuffer(GL_FRAMEBUFFER, screenFBO);
 	glEnable(GL_TEXTURE);
@@ -238,17 +269,18 @@ void display(void)
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 	gluPerspective(90, float(WINDOWX)/WINDOWY, 1, 40);
-	gluLookAt(camPos[0], camPos[1], camPos[2], 0, 0, 0, 0, 1, 0);
+	gluLookAt(camPos[0], camPos[1], camPos[2], vehicle.getX(), vehicle.getY(), vehicle.getZ(), 0, 1, 0);
 	//cam.updateView();
 
 	//glLoadMatrixf(vm);
 	glUseProgram(shaderProgram2);
 
-	updateShadowMatrices();
-	gms.back().draw();
+	updateMatrices();
+	vehicle.draw();
+	gms[0].draw();
 	glTranslatef(0, 0, 1);
 	glScalef(2, 2, 0.1);
-	updateShadowMatrices();
+	updateMatrices();
 	//gm->draw();
 	
 	glUseProgram(0);
@@ -277,7 +309,6 @@ void display(void)
 
 	glVertex3f( 1, -1, 0);
 	glTexCoord2f(0, 0); 
-
 	glEnd();
 
 	glDisable(GL_TEXTURE_2D);
@@ -288,10 +319,24 @@ void display(void)
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 }
 
-
+void gameLoop(){
+	keyOperations();
+	vehicle.update();
+	updateCamera();
+}
 
 void FPSUpdate(int i){
 	glutTimerFunc(1000/FPS, FPSUpdate , 0);
+	vs.update();
+
+	if (gamestate == GAMESTATE_VEHICLESELECT && vs.selected()){
+		gamestate = GAMESTATE_STARTED_GAME;
+		GameModel m = GameModel(vs.selectedVehicleName());
+		vehicle = Vehicle(0, 0, 0, 1.0, 1.0, 1.0, 1.0, false, m);
+	}
+	if (gamestate == GAMESTATE_STARTED_GAME){
+		gameLoop();
+	}
 	glutPostRedisplay();
 	tickTime();
 }
@@ -309,7 +354,7 @@ int main(int argc, char** argv)
 	glutInitWindowSize(WINDOWX, WINDOWY);
 	glutInitWindowPosition(50, 50);
 
-	glutCreateWindow("RideThruLife v0");	//creates the windowx
+	glutCreateWindow("RideThruLife v1");	//creates the windowx
 
 	GLenum err = glewInit();
 	if (GLEW_OK != err)
@@ -325,7 +370,8 @@ int main(int argc, char** argv)
 	//createMenu();
 
 	glutDisplayFunc(display);	//registers "display" as the display callback function
-	glutKeyboardFunc(keyboard);
+	glutKeyboardFunc(keyPressed); // Tell GLUT to use the method "keyPressed" for key presses  
+	glutKeyboardUpFunc(keyUp); // Tell GLUT to use the method "keyUp" for key up events  
 	glutMouseFunc(mousePressed);
 	glutPassiveMotionFunc(mouseMove);
 	//glutSpecialFunc(SpecialInput);

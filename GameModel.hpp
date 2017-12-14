@@ -19,10 +19,10 @@ class GameModel{
 		GameModel();
 		GameModel(std::string title);
 		void draw();
+		std::string title;
 	private:
 		GLfloat* objectData;
 		GLuint dataBuffer;
-		std::string title;
 		int numVertices;
 		int* n;
 		GLuint textureID;

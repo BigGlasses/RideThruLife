@@ -8,8 +8,10 @@
 
 #include "Vehicle.hpp"
 #include "GameModel.hpp"
+#include "GameData.hpp"
 
 //Gaint constructor, sorry
+Vehicle::Vehicle(){}
 Vehicle::Vehicle(float Inx, float Iny, float Inz, float Inacceleration, float Inturning, float Inbrakes, float InfuelEfficency, bool InisBoat, GameModel InModel)
 {
 	x = Inx;
@@ -59,6 +61,9 @@ float Vehicle::getAcceleration()
 	return acceleration;
 }
 
+void Vehicle::shouldTurn(bool val){
+	isTurning = val;
+}
 float Vehicle::getTurning()
 {
 	return turning;
@@ -109,16 +114,20 @@ void Vehicle::accelerate(bool state)
 //Rotation is 0-360.  Assuming this would be used on the x-Plane.  Don't know if we want other rotations? (y,z)?
 void Vehicle::turn(bool direction)
 {
-	if(direction)
-		rotation += turning;
-		//Fix overflow
-		if(rotation > 360)
-			rotation = static_cast<int>(rotation) % 360;
-	else
-		rotation -= turning;
-		//Fix underflow
-		if(rotation < 0)
-			rotation = rotation + 360;
+	if(isTurning){
+		if(direction){
+			rotation += turning;
+			//Fix overflow
+			if(rotation > 360)
+				rotation = static_cast<int>(rotation) % 360;
+		}
+		else{
+			rotation -= turning;
+			//Fix underflow
+			if(rotation < 0)
+				rotation = rotation + 360;
+		}
+	}
 }
 
 void Vehicle::ChangeTilt(bool direction, float mag)
@@ -158,17 +167,25 @@ void Vehicle::update()
 	//Updates speeds
 	if(isAccelerating)
 	{
-		speedX += sin(rotation) * acceleration;
-		speedZ += cos(rotation) * acceleration;
+		speedX += sin(rotation) * acceleration/10.0;
+		speedZ += cos(rotation) * acceleration/10.0;
 	}
 	if(isBraking)
 	{
-		speedX -= sin(rotation) * brakes;
-		speedZ -= cos(rotation) * brakes;
+		speedX -= sin(rotation) * brakes/10.0;
+		speedZ -= cos(rotation) * brakes/10.0;
 	}
+	speedX *= 0.9; //drag
+	speedZ *= 0.9; //drag
 
 	//Update position
 	x += speedX;
 	y += speedY;
 	z += speedZ;
+}
+
+void Vehicle::draw(){
+	glRotatef(rotation, 0, 1.0, 0);
+	updateMatrices();
+	model.draw();
 }

@@ -10,6 +10,8 @@
 #include <string>
 #include <algorithm>
 #include <fstream>
+#include <iostream>
+#include <string>
 
 #include "GameModel.hpp"
 #include "GameData.hpp"
@@ -23,11 +25,14 @@ class VehicleSelect{
 		void init();
 		void update();
 		void keyboard(unsigned char key, int xIn, int yIn);
+		bool selected();
+		std::string selectedVehicleName();
 
 	private:
 		int vehicleIndex = 0;
 		int rotation = 0;
 		GLuint background;
+		bool finished = false;
 
 };
 

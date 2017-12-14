@@ -16,8 +16,10 @@
 
 class Vehicle{
 	public:
+		Vehicle();
 		Vehicle(float Inx, float Iny, float Inz, float acceleration, float turning, float brakes, float fuelEfficency, bool isBoat, GameModel Inmodel);
 		void update();
+		void draw();
 		void accelerate(bool state);
 		void turn(bool direction);
 		void ChangeTilt(bool direction, float mag);
@@ -37,6 +39,7 @@ class Vehicle{
 		float getRotation();
 		float getTilt();
 		float getRoll();
+		void shouldTurn(bool val);
 		GameModel getModel();
 
 	private:
@@ -56,6 +59,7 @@ class Vehicle{
 		bool isBoat = false;
 		bool isAccelerating = false;
 		bool isBraking = false;
+		bool isTurning = false;
 		GameModel model;
 };
 

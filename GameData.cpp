@@ -42,6 +42,7 @@ int FPS = 60;
 //Window size
 int WINDOWX = 1280;
 int WINDOWY = 720;
+bool updateLights;
 
 void tickTime(){
 	timePassed += 1/((float)FPS);
@@ -97,6 +98,13 @@ void loadAssets(){
 
 	}
 
+void focusOnLights(){
+	updateLights = true;
+}
+
+void focusOnShadows(){
+	updateLights = false;
+}
 
 
 //Updates the modelview and projection matrix variables.
@@ -121,4 +129,13 @@ void updateLightMatrices(){
 	glUniformMatrix4fv(mvMatrixLoc,  1, GL_FALSE, modelViewLightMatrix);
 	glUniformMatrix4fv(pMatrixLoc,  1, GL_FALSE, projectionLightMatrix);
 	glUniform1f(timeLoc, timePassed);
+}
+
+void updateMatrices(){
+	if (updateLights){
+		updateLightMatrices();
+	}
+	else{
+		updateShadowMatrices();
+	}
 }

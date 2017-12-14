@@ -86,19 +86,32 @@ void VehicleSelect::update(){
 	rotation = (rotation + 1) % 360;
 }
 
+bool VehicleSelect::selected(){
+	return finished;
+}
+
+std::string VehicleSelect::selectedVehicleName(){
+	std::cout << gms[vehicleIndex].title;
+	return gms[vehicleIndex].title;
+}
+
 void VehicleSelect::keyboard(unsigned char key, int xIn, int yIn)
 {
 	// cam.keyPressed(key);
 	switch (key)
 	{
 		case 'a':
-		vehicleIndex -= 1;
-		if (vehicleIndex < 0) vehicleIndex = 0;
-		break;
+			vehicleIndex -= 1;
+			if (vehicleIndex < 0) vehicleIndex = 0;
+			break;
 
 		case 'd':
-		vehicleIndex += 1;
-		if (vehicleIndex >= vehicleNum) vehicleIndex = vehicleNum - 1;
-		break;
+			vehicleIndex += 1;
+			if (vehicleIndex >= vehicleNum) vehicleIndex = vehicleNum - 1;
+			break;
+
+		case 'w':
+			finished = true;
+			break;
 	}
 }
