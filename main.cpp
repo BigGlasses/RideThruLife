@@ -66,7 +66,7 @@ void keyPressed (unsigned char key, int x, int y) {
 			case 'd':
 			break;
 			case 'j':
-			yaw += 0.1;
+			vehicle.jump();
 			break;
 			case 'l':
 			yaw -= 0.1;
@@ -89,9 +89,9 @@ keyStates[key] = false; // Set the state of the current key to not pressed
 
 // Updates the camera position to reflect the yaw, pitch.
 void updateCamera(){
-	camPos[0] = vehicle.getTrailX(100) - 10 * sin(vehicle.getRotation()* PI / 180.0 );
-	camPos[1] = vehicle.getTrailY(100) + 10;
-	camPos[2] = vehicle.getTrailZ(100) - 10	 * cos(vehicle.getRotation()* PI / 180.0 );
+	camPos[0] = vehicle.getTrailX(20) - 10 * sin(vehicle.getRotation()* PI / 180.0 );
+	camPos[1] = vehicle.getTrailY(20) + 10;
+	camPos[2] = vehicle.getTrailZ(20) - 10	 * cos(vehicle.getRotation()* PI / 180.0 );
 
 	lightPos[0] = vehicle.getX() + 25;
 	lightPos[1] = vehicle.getY() + 25;
@@ -279,7 +279,7 @@ void display(void)
 	glClearColor(0, 0, 0, 0);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-	gluPerspective(90, float(WINDOWX)/WINDOWY, 1, 60);
+	gluPerspective(90, float(WINDOWX)/WINDOWY, 1, 120);
 	gluLookAt(camPos[0], camPos[1], camPos[2], vehicle.getX(), vehicle.getY(), vehicle.getZ(), 0, 1, 0);
 	//cam.updateView();
 
