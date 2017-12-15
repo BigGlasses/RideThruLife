@@ -60,7 +60,7 @@ void VehicleSelect::draw(){
 	camDir[2] = 10;
 
 	glUseProgram(shaderProgram2);
-	glTranslatef(vehicleIndex*10, 0, 0);
+	glTranslatef(vehicleIndex*15, 0, 0);
 	updateLightMatrices();
 	updateShadowMatrices();
 	for (int i = 0; i < vehicleNum; i++){
@@ -76,7 +76,7 @@ void VehicleSelect::draw(){
 			updateShadowMatrices();
 			gms[i].draw();
 		}
-		glTranslatef(-10, 0, 0);
+		glTranslatef(-15, 0, 0);
 	}
 	glUseProgram(0);
 

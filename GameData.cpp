@@ -37,7 +37,7 @@ float camDir[] = {1, 1, 1};
 
 shaderLoader shaderLoading;
 float timePassed = 0;
-const int vehicleNum = 8;
+const int vehicleNum = 12;
 int FPS = 60;
 //Window size
 int WINDOWX = 1280;
@@ -58,6 +58,10 @@ void loadAssets(){
 	vehicleNames.push_back("grill");
 	vehicleNames.push_back("hot_air_balloon");
 	vehicleNames.push_back("row_boat");
+	vehicleNames.push_back("building");
+	vehicleNames.push_back("barrel");
+	vehicleNames.push_back("claw");
+	vehicleNames.push_back("star");
 
 
 	for (int i=0; i < vehicleNames.size(); i++) {

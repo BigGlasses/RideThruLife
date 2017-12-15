@@ -27,7 +27,7 @@ void main()
    	vec3 R = normalize(-reflect(L,normal));  
  
    //calculate Ambient Term:  
-   vec3 Iamb = vec3(0.25, 0.25, 0);
+   vec3 Iamb = vec3(0.25, 0.25, 0.25) * texture(normalTexture, texCoord).rgb;
 
    //calculate Diffuse Term:  
    vec3 Idiff = Color * texture(normalTexture, texCoord).rgb * max(dot(normal,L), 0.0);
@@ -39,8 +39,8 @@ void main()
 
    // write Total Color:  
    outputF = vec4( (Iamb + Idiff + Ispec * 0.25) * visibility, 1.0);
-   outputF = vec4(Color * texture(normalTexture, texCoord).rgb * visibility, 1.0);
-   outputF = vec4(texture( shadowTexture, ShadowCoord.xy).x,texture( shadowTexture, ShadowCoord.xy).x,texture( shadowTexture, ShadowCoord.xy).x, 1.0); 
+   //outputF = vec4(Color * texture(normalTexture, texCoord).rgb * visibility, 1.0);
+   //outputF = vec4(texture( shadowTexture, ShadowCoord.xy).x,texture( shadowTexture, ShadowCoord.xy).x,texture( shadowTexture, ShadowCoord.xy).x, 1.0); 
    //outputF = vec4(visibility, visibility, visibility, 1.0); 
 
  //    outputF = vec4(Color * texture(normalTexture, texCoord).rgb,1.0);

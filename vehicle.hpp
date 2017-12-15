@@ -17,7 +17,7 @@
 class Vehicle{
 	public:
 		Vehicle();
-		Vehicle(float Inx, float Iny, float Inz, float acceleration, float turning, float brakes, float fuelEfficency, bool isBoat, GameModel Inmodel);
+		Vehicle(float Inx, float Iny, float Inz, float acceleration, float turning, float brakes, float fuelEfficency, float Inscale, bool isBoat, GameModel Inmodel);
 		void update();
 		void draw();
 		void accelerate(bool state);
@@ -29,6 +29,7 @@ class Vehicle{
 		float getX();
 		float getY();
 		float getZ();
+		float getScale();
 		float getSpeedX();
 		float getSpeedY();
 		float getSpeedZ();
@@ -53,6 +54,7 @@ class Vehicle{
 		float speedX = 0.0;
 		float speedY = 0.0;
 		float speedZ = 0.0;
+		float scale = 1.0;
 
 		float angularX = 0.0;
 		float angularY = 0.0;

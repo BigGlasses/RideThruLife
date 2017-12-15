@@ -14,10 +14,11 @@
 
 //Gaint constructor, sorry
 Vehicle::Vehicle(){}
-Vehicle::Vehicle(float Inx, float Iny, float Inz, float Inacceleration, float Inturning, float Inbrakes, float InfuelEfficency, bool InisBoat, GameModel InModel){
+Vehicle::Vehicle(float Inx, float Iny, float Inz, float Inacceleration, float Inturning, float Inbrakes, float InfuelEfficency, float Inscale,bool InisBoat, GameModel InModel){
 	x = Inx;
 	y = Iny;
 	z = Inz;
+	scale = Inscale;
 	acceleration = Inacceleration;
 	turning = Inturning;
 	brakes = Inbrakes;
@@ -35,6 +36,11 @@ float Vehicle::getX()
 float Vehicle::getY()
 {
 	return y;
+}
+
+float Vehicle::getScale()
+{
+	return scale;
 }
 
 float Vehicle::getZ()
@@ -169,7 +175,8 @@ float Vehicle::getTrailZ(int i){
 }
 
 void Vehicle::jump(){
-	momentumY += 3;
+	if (y <= 0 && momentumY <= 0)
+		momentumY += fuelEfficency*4;
 }
 
 void Vehicle::update(){

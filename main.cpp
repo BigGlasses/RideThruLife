@@ -51,6 +51,8 @@ Camera cam;
 VehicleSelect vs;
 Vehicle vehicle;
 GameModel levelplain;
+int life = 100;
+int maxLife = 100;
 
 bool* keyStates = new bool[256]; // Create an array of boolean values of length 256 (0-255)
 
@@ -89,9 +91,9 @@ keyStates[key] = false; // Set the state of the current key to not pressed
 
 // Updates the camera position to reflect the yaw, pitch.
 void updateCamera(){
-	camPos[0] = vehicle.getTrailX(20) - 10 * sin(vehicle.getRotation()* PI / 180.0 );
-	camPos[1] = vehicle.getTrailY(20) + 10;
-	camPos[2] = vehicle.getTrailZ(20) - 10	 * cos(vehicle.getRotation()* PI / 180.0 );
+	camPos[0] = vehicle.getTrailX(20) - 10 * sin(vehicle.getRotation()* PI / 180.0 ) * vehicle.getScale();
+	camPos[1] = vehicle.getTrailY(20) + 10  * vehicle.getScale();
+	camPos[2] = vehicle.getTrailZ(20) - 10	 * cos(vehicle.getRotation()* PI / 180.0 )  * vehicle.getScale();
 
 	lightPos[0] = 15;
 	lightPos[1] = 15;
@@ -241,15 +243,10 @@ void display(void)
 	glOrtho(-20, 20, -20, 20, -10, 50);
 	gluLookAt(lightPos[0] + vehicle.getX(), lightPos[1] + vehicle.getY(), lightPos[2] + vehicle.getZ(), vehicle.getX(), vehicle.getY(), vehicle.getZ(), 0, 1, 0);
 	glUseProgram(shaderProgram1);
-<<<<<<< HEAD
-		
-=======
-
->>>>>>> b33db440fbf37fdb078bd02b2b916c56558893f4
 	updateMatrices();
 	glPushMatrix();
-	// glScalef(.20, 1, .20);
-	// updateMatrices();
+	glScalef(20, 1, 20);
+	updateMatrices();
 	levelplain.draw();
 	glPopMatrix();
 	updateMatrices();
@@ -280,7 +277,7 @@ void display(void)
 	glClearColor(0, 0, 0, 0);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-	gluPerspective(90, float(WINDOWX)/WINDOWY, 1, 120);
+	gluPerspective(90, float(WINDOWX)/WINDOWY, 1, 240);
 	gluLookAt(camPos[0], camPos[1], camPos[2], vehicle.getX(), vehicle.getY(), vehicle.getZ(), 0, 1, 0);
 	//cam.updateView();
 
@@ -288,18 +285,24 @@ void display(void)
 	glUseProgram(shaderProgram2);
 
 	updateMatrices();
-	// glPushMatrix();
-	// glScalef(.20, 1, .20);
-	// updateMatrices();
-	levelplain.draw();
-<<<<<<< HEAD
-	// glPopMatrix();
+	glPushMatrix();
+	glScalef(20, 1, 20);
 	updateMatrices();
-	gms[3].draw();
-=======
+	levelplain.draw();
 	glPopMatrix();
 	updateMatrices();
->>>>>>> b33db440fbf37fdb078bd02b2b916c56558893f4
+	gms[3].draw();
+	glPopMatrix();
+	updateMatrices();
+	for (int i = 0; i < life; i ++){
+		glPushMatrix();
+		glTranslatef(vehicle.getTrailX(i), vehicle.getTrailY(i), vehicle.getTrailZ(i));
+		glScalef(2, 2, 2);
+		updateMatrices();
+		gms[11].draw();
+		glPopMatrix();
+	}
+
 	vehicle.draw();
 
 	glUseProgram(0);
@@ -350,8 +353,44 @@ void FPSUpdate(int i){
 
 	if (gamestate == GAMESTATE_VEHICLESELECT && vs.selected()){
 		gamestate = GAMESTATE_STARTED_GAME;
-		GameModel m = GameModel(vs.selectedVehicleName());
-		vehicle = Vehicle(0, 0, 0, 1.0, 2.0, 1.0, 1.0, false, m);
+		std::string vname = vs.selectedVehicleName();
+		GameModel m = GameModel(vname);
+		if (vname == "car"){
+			vehicle = Vehicle(0, 0, 0, 1.0, 2.0, 1.0, 1.0, 1.0, false, m);
+		}
+		else if (vname == "dinner_table"){
+			vehicle = Vehicle(0, 0, 0, 0.7, 1.2, 0.3, 1.0, 1.0, false, m);
+		}
+		else if (vname == "christmas_tree"){
+			vehicle = Vehicle(0, 0, 0, 2.0, 5.0, 4.0, 2.0, 1.0, false, m);
+		}
+		else if (vname == "grill"){
+			vehicle = Vehicle(0, 0, 0, 1.2, 1.6, 0.8, 1.2, 1.0, false, m);
+		}
+		else if (vname == "bike"){
+			vehicle = Vehicle(0, 0, 0, 1.5, 1.8, 0.7, 1.0, 1.0, false, m);
+		}
+		else if (vname == "balloon"){
+			vehicle = Vehicle(0, 0, 2.5, 3.0, 2.5, 0.3, 1.6, 1.0, false, m);
+		}
+		else if (vname == "hot_air_balloon"){
+			vehicle = Vehicle(0, 0, 4.5, 0.2, 0.3, 0.2, 0.7, 1.0, false, m);
+		}
+		else if (vname == "claw"){
+			vehicle = Vehicle(0, 0, 0, 0.5, 0.5, 0.7, 0.5, 1.0, false, m);
+		}
+		else if (vname == "row_boat"){
+			vehicle = Vehicle(0, 0, 0, 0.8, 1.4, 0.8, 1.3, 1.0, true, m);
+		}
+		else if (vname == "building"){
+			vehicle = Vehicle(0, 0, 0, 1.5, 0.5, 0.7, 1.5, 3.0, false, m);
+		}
+		else if (vname == "snowman"){
+			vehicle = Vehicle(0, 0, 0, 2.5, 1.5, 0.7, 1.5, 1.0, false, m);
+		}
+		else if (vname == "barrel"){
+			vehicle = Vehicle(0, 0, 0, 1.5, 0.5, 1.7, 3.5, 1.0, false, m);
+		}
 	}
 	if (gamestate == GAMESTATE_STARTED_GAME){
 		gameLoop();
