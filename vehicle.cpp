@@ -207,10 +207,10 @@ void Vehicle::update(){
 	momentumY += 0.2 * -(y - getTrailY(1)) + speedY/10.0;
 	momentumZ += 0.2 * -(z - getTrailZ(1)) + speedZ/10.0;
 
-	momentumX *= 0.9;
-	momentumY *= 0.9;
-	momentumZ *= 0.9;
-	momentumY -= 0.05;
+	momentumX *= 0.95;
+	momentumY *= 0.95;
+	momentumZ *= 0.95;
+	momentumY -= 0.15;
 
 	x += momentumX;
 	y += momentumY;

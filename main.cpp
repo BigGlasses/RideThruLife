@@ -93,9 +93,9 @@ void updateCamera(){
 	camPos[1] = vehicle.getTrailY(20) + 10;
 	camPos[2] = vehicle.getTrailZ(20) - 10	 * cos(vehicle.getRotation()* PI / 180.0 );
 
-	lightPos[0] = vehicle.getX() + 25;
-	lightPos[1] = vehicle.getY() + 25;
-	lightPos[2] = vehicle.getZ() + 25;
+	lightPos[0] = 15;
+	lightPos[1] = 15;
+	lightPos[2] = 15;
 
 	camDir[0] = - camPos[0] + 16.0 * cos(yaw);
 	camDir[1] = - camPos[1] + 16.0 * sin(pitch);
@@ -148,7 +148,7 @@ void prepareScreen(){
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-		glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT24, WINDOWX, WINDOWY, 0, GL_DEPTH_COMPONENT, GL_FLOAT, NULL);
+		glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT24, 1024, 1024, 0, GL_DEPTH_COMPONENT, GL_FLOAT, NULL);
 		glBindTexture(GL_TEXTURE_2D, 0);
 
 		glBindFramebuffer(GL_FRAMEBUFFER, shadowFBO);
@@ -238,28 +238,25 @@ void display(void)
 	glClearColor(0, 0, 0, 0);
 	glBindFramebuffer(GL_FRAMEBUFFER, shadowFBO);
 	glClear( GL_DEPTH_BUFFER_BIT );
-	glOrtho(-25, 25, -25, 25, 1, 80);
-	gluLookAt(lightPos[0], lightPos[1], lightPos[2], vehicle.getX(), vehicle.getY(), vehicle.getZ(), 0, 1, 0);
+	glOrtho(-20, 20, -20, 20, -10, 50);
+	gluLookAt(lightPos[0] + vehicle.getX(), lightPos[1] + vehicle.getY(), lightPos[2] + vehicle.getZ(), vehicle.getX(), vehicle.getY(), vehicle.getZ(), 0, 1, 0);
 	glUseProgram(shaderProgram1);
-	
+		
 	updateMatrices();
 	glPushMatrix();
-	glScalef(20, 1, 20);
-	updateMatrices();
+	// glScalef(.20, 1, .20);
+	// updateMatrices();
 	levelplain.draw();
 	glPopMatrix();
 	updateMatrices();
+	gms[3].draw();	
 	vehicle.draw();
-	glTranslatef(0, 0, 1);
-	glScalef(2, 2, 0.1);
-	updateMatrices();
-	//gm->draw();
 
 
 	//Retain the basic light transformations, for the shadow pass
 	glLoadIdentity();
-	glOrtho(-25, 25, -25, 25, 1, 80);
-	gluLookAt(lightPos[0], lightPos[1], lightPos[2], vehicle.getX(), vehicle.getY(), vehicle.getZ(), 0, 1, 0);
+	glOrtho(-20, 20, -20, 20, -10, 50);
+	gluLookAt(lightPos[0] + vehicle.getX(), lightPos[1] + vehicle.getY(), lightPos[2] + vehicle.getZ(), vehicle.getX(), vehicle.getY(), vehicle.getZ(), 0, 1, 0);
 	updateMatrices();
 	
 	glUseProgram(0);
@@ -283,16 +280,17 @@ void display(void)
 	gluLookAt(camPos[0], camPos[1], camPos[2], vehicle.getX(), vehicle.getY(), vehicle.getZ(), 0, 1, 0);
 	//cam.updateView();
 
-	//glLoadMatrixf(vm);
+
 	glUseProgram(shaderProgram2);
 
 	updateMatrices();
-	glPushMatrix();
-	glScalef(20, 1, 20);
-	updateMatrices();
+	// glPushMatrix();
+	// glScalef(.20, 1, .20);
+	// updateMatrices();
 	levelplain.draw();
-	glPopMatrix();
-	updateMatrices();	
+	// glPopMatrix();
+	updateMatrices();
+	gms[3].draw();
 	vehicle.draw();
 	
 	glUseProgram(0);

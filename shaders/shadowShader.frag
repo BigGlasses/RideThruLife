@@ -15,7 +15,7 @@ out vec4 outputF;
  
 void main()
 {
-	float bias = 0.005;
+	float bias = 0.0005;
 	float visibility = 1.0;
     vec3 lightPosition = vec3(5, 5, 5);
 	if ( texture( shadowTexture, ShadowCoord.xy ).z  <  ShadowCoord.z-bias){
@@ -39,8 +39,9 @@ void main()
 
    // write Total Color:  
    outputF = vec4( (Iamb + Idiff + Ispec * 0.25) * visibility, 1.0);
-
-
+   outputF = vec4(Color * texture(normalTexture, texCoord).rgb * visibility, 1.0);
+   outputF = vec4(texture( shadowTexture, ShadowCoord.xy).x,texture( shadowTexture, ShadowCoord.xy).x,texture( shadowTexture, ShadowCoord.xy).x, 1.0); 
+   //outputF = vec4(visibility, visibility, visibility, 1.0); 
 
  //    outputF = vec4(Color * texture(normalTexture, texCoord).rgb,1.0);
  //    float lightPower =  clamp( dot( normal, vec3(1, 0, 1) ), 0,1 );
