@@ -22,6 +22,7 @@ class Vehicle{
 		void draw();
 		void accelerate(bool state);
 		void turn(bool direction);
+		void jump();
 		void ChangeTilt(bool direction, float mag);
 		void ChangeRoll(bool direction, float mag);
 		void brake(bool state);
@@ -52,6 +53,15 @@ class Vehicle{
 		float speedX = 0.0;
 		float speedY = 0.0;
 		float speedZ = 0.0;
+
+		float angularX = 0.0;
+		float angularY = 0.0;
+		float angularZ = 0.0;
+
+		float momentumX = 0.0;
+		float momentumY = 0.0;
+		float momentumZ = 0.0;
+
 		float acceleration = 0.0;
 		float rotation = 0.0;
 		float tilt = 0.0;
