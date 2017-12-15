@@ -117,16 +117,10 @@ void Vehicle::turn(bool direction)
 {
 	if(isTurning){
 		if(direction){
-			rotation += turning;
-			//Fix overflow
-			if(rotation > 360)
-				rotation = static_cast<int>(rotation) % 360;
+			angularX += turning;
 		}
 		else{
-			rotation -= turning;
-			//Fix underflow
-			if(rotation < 0)
-				rotation = rotation + 360;
+			angularX -= turning;
 		}
 	}
 }
@@ -174,11 +168,16 @@ float Vehicle::getTrailZ(int i){
 	return trail[(trailIndex + i) % vehicleTrailLength][2];
 }
 
+void Vehicle::jump(){
+	momentumY += 3;
+}
+
 void Vehicle::update(){
 	trail[trailIndex][0] = x;
 	trail[trailIndex][1] = y;
 	trail[trailIndex][2] = z;
-	trailIndex = (trailIndex + 1) % vehicleTrailLength;
+	trailIndex = (trailIndex - 1) % vehicleTrailLength;
+	if (trailIndex < 0) trailIndex = vehicleTrailLength - 1;
 
 	//Updates speeds
 	if(isAccelerating)
@@ -191,18 +190,48 @@ void Vehicle::update(){
 		speedX -= sin(rotation * PI / 180.0 ) * brakes/10.0;
 		speedZ -= cos(rotation * PI / 180.0 ) * brakes/10.0;
 	}
-	speedX *= 0.9; //drag
-	speedZ *= 0.9; //drag
 
+	//Update Spin
+	rotation += angularX/5.0;
+	angularX *= 0.9;
+	if(rotation > 360)
+		rotation = static_cast<int>(rotation) % 360;
+	//Fix underflow
+	if(rotation < 0)
+		rotation = rotation + 360;
+
+	speedX *= 0.9; //drag
+	speedZ *= 0.9; //drag	
 	//Update position
-	x += speedX;
-	y += speedY;
-	z += speedZ;
+	momentumX += 0.2 * -(x - getTrailX(1)) + speedX/10.0;
+	momentumY += 0.2 * -(y - getTrailY(1)) + speedY/10.0;
+	momentumZ += 0.2 * -(z - getTrailZ(1)) + speedZ/10.0;
+
+	momentumX *= 0.9;
+	momentumY *= 0.9;
+	momentumZ *= 0.9;
+	momentumY -= 0.05;
+
+	x += momentumX;
+	y += momentumY;
+	z += momentumZ;
+
+	if (y < 0){
+		y = 0;
+		momentumY = 0;
+	}
 }
 
 void Vehicle::draw(){
 	glTranslatef(x, y, z);
 	glRotatef(rotation, 0, 1.0, 0);
+
+	if (abs(momentumZ) + abs(momentumY) + abs(momentumX) > 0){
+		float moment = sqrt(momentumZ*momentumZ + momentumX*momentumX + momentumY*momentumY);
+		glRotatef(-360*(momentumY/(5 + moment)), 1.0, 0, 0);
+		glRotatef(-60*(angularX)/(35 * moment), 0, 0, 1.0);
+	}
+
 	updateMatrices();
 	model.draw();
 }

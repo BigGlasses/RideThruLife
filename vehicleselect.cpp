@@ -91,7 +91,7 @@ bool VehicleSelect::selected(){
 }
 
 std::string VehicleSelect::selectedVehicleName(){
-	std::cout << gms[vehicleIndex].title;
+	//std::cout << gms[vehicleIndex].title;
 	return gms[vehicleIndex].title;
 }
 
