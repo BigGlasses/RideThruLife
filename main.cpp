@@ -42,7 +42,7 @@ GLuint shadowFBO;
 // 0.0, 0.5, 0.0, 0.0,
 // 0.0, 0.0, 0.5, 0.0,
 // 0.5, 0.5, 0.5, 1.0}
-// ; 
+// ;
 
 
 textureLoader textureLoading;
@@ -54,14 +54,14 @@ GameModel levelplain;
 
 bool* keyStates = new bool[256]; // Create an array of boolean values of length 256 (0-255)
 
-void keyPressed (unsigned char key, int x, int y) {  
+void keyPressed (unsigned char key, int x, int y) {
 		vs.keyboard(key, x, y);
 		// cam.keyPressed(key);
 		switch (key)
 		{
 			case 'q':
 			case 27:	//27 is the esc key
-			exit(0); 
+			exit(0);
 			break;
 			case 'd':
 			break;
@@ -79,12 +79,12 @@ void keyPressed (unsigned char key, int x, int y) {
 			break;
 	}
 
-	keyStates[key] = true; // Set the state of the current key to pressed  
-}  
+	keyStates[key] = true; // Set the state of the current key to pressed
+}
 
-void keyUp (unsigned char key, int x, int y) {  
-keyStates[key] = false; // Set the state of the current key to not pressed  
-}  
+void keyUp (unsigned char key, int x, int y) {
+keyStates[key] = false; // Set the state of the current key to not pressed
+}
 
 
 // Updates the camera position to reflect the yaw, pitch.
@@ -133,7 +133,7 @@ void prepareScreen(){
 	 }
 
 	 glBindFramebuffer(GL_FRAMEBUFFER, 0);
-	 
+
 	}
 
 //Prepares the shadow FBO
@@ -164,7 +164,7 @@ void prepareScreen(){
 
 
 
-void keyOperations (void) {  
+void keyOperations (void) {
 	if (GAMESTATE_STARTED_GAME){
 		if (keyStates['w'])
 			vehicle.accelerate(true);
@@ -181,7 +181,7 @@ void keyOperations (void) {
 			vehicle.turn(false);
 		else vehicle.shouldTurn(false);
 	}
-}  
+}
 
 
 void mouseMove(int x, int y){
@@ -231,7 +231,7 @@ void display(void)
 
 	glLoadIdentity();
 	glEnable(GL_DEPTH_TEST);
-	
+
 	glDisable(GL_TEXTURE);
 	focusOnLights();
 	//First Pass (shadows)
@@ -241,7 +241,7 @@ void display(void)
 	glOrtho(-25, 25, -25, 25, 1, 80);
 	gluLookAt(lightPos[0], lightPos[1], lightPos[2], vehicle.getX(), vehicle.getY(), vehicle.getZ(), 0, 1, 0);
 	glUseProgram(shaderProgram1);
-	
+
 	updateMatrices();
 	glPushMatrix();
 	glScalef(20, 1, 20);
@@ -261,7 +261,7 @@ void display(void)
 	glOrtho(-25, 25, -25, 25, 1, 80);
 	gluLookAt(lightPos[0], lightPos[1], lightPos[2], vehicle.getX(), vehicle.getY(), vehicle.getZ(), 0, 1, 0);
 	updateMatrices();
-	
+
 	glUseProgram(0);
 	//renderScene();// First Pass
 
@@ -292,9 +292,9 @@ void display(void)
 	updateMatrices();
 	levelplain.draw();
 	glPopMatrix();
-	updateMatrices();	
+	updateMatrices();
 	vehicle.draw();
-	
+
 	glUseProgram(0);
 
 
@@ -311,16 +311,16 @@ void display(void)
 	glBegin(GL_QUADS);
 
 	glVertex3f(-1, -1, 0);
-	glTexCoord2f(0, 1); 
+	glTexCoord2f(0, 1);
 
 	glVertex3f(-1,  1, 0);
-	glTexCoord2f(1, 1); 
+	glTexCoord2f(1, 1);
 
 	glVertex3f( 1,  1, 0);
-	glTexCoord2f(1, 0); 
+	glTexCoord2f(1, 0);
 
 	glVertex3f( 1, -1, 0);
-	glTexCoord2f(0, 0); 
+	glTexCoord2f(0, 0);
 	glEnd();
 
 	glDisable(GL_TEXTURE_2D);
@@ -382,8 +382,8 @@ int main(int argc, char** argv)
 	//createMenu();
 
 	glutDisplayFunc(display);	//registers "display" as the display callback function
-	glutKeyboardFunc(keyPressed); // Tell GLUT to use the method "keyPressed" for key presses  
-	glutKeyboardUpFunc(keyUp); // Tell GLUT to use the method "keyUp" for key up events  
+	glutKeyboardFunc(keyPressed); // Tell GLUT to use the method "keyPressed" for key presses
+	glutKeyboardUpFunc(keyUp); // Tell GLUT to use the method "keyUp" for key up events
 	glutMouseFunc(mousePressed);
 	glutPassiveMotionFunc(mouseMove);
 	//glutSpecialFunc(SpecialInput);
