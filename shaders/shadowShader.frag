@@ -15,7 +15,7 @@ out vec4 outputF;
  
 void main()
 {
-	float bias = 0.0005;
+	float bias = 0.005;
 	float visibility = 1.0;
     vec3 lightPosition = vec3(5, 5, 5);
 	if ( texture( shadowTexture, ShadowCoord.xy ).z  <  ShadowCoord.z-bias){
@@ -27,7 +27,7 @@ void main()
    	vec3 R = normalize(-reflect(L,normal));  
  
    //calculate Ambient Term:  
-   vec3 Iamb = vec3(0.25, 0.25, 0.25) * texture(normalTexture, texCoord).rgb;
+   vec3 Iamb = vec3(0.45, 0.45, 0.45) * texture(normalTexture, texCoord).rgb;
 
    //calculate Diffuse Term:  
    vec3 Idiff = Color * texture(normalTexture, texCoord).rgb * max(dot(normal,L), 0.0);

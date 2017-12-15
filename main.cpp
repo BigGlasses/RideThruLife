@@ -1,4 +1,5 @@
 #include <stdio.h>
+#include <cstdlib>
 #include <stdlib.h>
 #include <math.h>
 #include <cmath>
@@ -15,6 +16,7 @@
 #include "camera.hpp"
 #include "vehicleselect.hpp"
 #include "vehicle.hpp"
+#include "collectible.hpp"
 
 #define PI 3.14159265
 
@@ -51,8 +53,11 @@ Camera cam;
 VehicleSelect vs;
 Vehicle vehicle;
 GameModel levelplain;
-int life = 100;
+float life = 100;
 int maxLife = 100;
+
+std::vector<Collectible> clist;
+
 
 bool* keyStates = new bool[256]; // Create an array of boolean values of length 256 (0-255)
 
@@ -88,20 +93,27 @@ void keyUp (unsigned char key, int x, int y) {
 keyStates[key] = false; // Set the state of the current key to not pressed
 }
 
-
 // Updates the camera position to reflect the yaw, pitch.
 void updateCamera(){
 	camPos[0] = vehicle.getTrailX(20) - 10 * sin(vehicle.getRotation()* PI / 180.0 ) * vehicle.getScale();
 	camPos[1] = vehicle.getTrailY(20) + 10  * vehicle.getScale();
 	camPos[2] = vehicle.getTrailZ(20) - 10	 * cos(vehicle.getRotation()* PI / 180.0 )  * vehicle.getScale();
 
-	lightPos[0] = 15;
-	lightPos[1] = 15;
-	lightPos[2] = 15;
+	lightPos[0] = 50;
+	lightPos[1] = 50;
+	lightPos[2] = 50;
 
 	camDir[0] = - camPos[0] + 16.0 * cos(yaw);
 	camDir[1] = - camPos[1] + 16.0 * sin(pitch);
 	camDir[2] = - camPos[2] + 16.0 * sin(yaw);
+}
+
+void addCollectible(){
+
+	float x0 = -400 + static_cast <float> (rand()) /( static_cast <float> (RAND_MAX/(400- -400)));
+	float y0 = 0 + static_cast <float> (rand()) /( static_cast <float> (RAND_MAX/(20 - 0)));
+	float z0 = -400 + static_cast <float> (rand()) /( static_cast <float> (RAND_MAX/(400- -400)));
+	clist.push_back(Collectible(x0, y0, z0, FPS*10, gms[11]));
 }
 
 
@@ -205,6 +217,7 @@ void init(void)
 	vs.init();
 	levelplain = GameModel(std::string("level"));
 
+
 }
 
 //Prepares the display
@@ -221,6 +234,27 @@ void renderScene(void){
 
 }
 
+void lightProject(){
+	glMatrixMode(GL_PROJECTION);
+	glLoadIdentity();
+	glOrtho(-50, 50, -50, 50, -10, 100);
+	glMatrixMode(GL_MODELVIEW);
+	glLoadIdentity();
+	gluLookAt(lightPos[0] + vehicle.getX(), lightPos[1] + vehicle.getY(), lightPos[2] + vehicle.getZ(), vehicle.getX(), vehicle.getY(), vehicle.getZ(), 0, 1, 0);
+	focusOnLights();
+	updateMatrices();
+}
+
+void cameraProject(){
+	glMatrixMode(GL_PROJECTION);
+	glLoadIdentity();
+	gluPerspective(90, float(WINDOWX)/WINDOWY, 1, 2000);
+	glMatrixMode(GL_MODELVIEW);
+	glLoadIdentity();
+	gluLookAt(camPos[0], camPos[1], camPos[2], vehicle.getX(), vehicle.getY(), vehicle.getZ(), 0, 1, 0);
+	focusOnShadows();
+	updateMatrices();
+}
 
 void display(void)
 {
@@ -231,43 +265,36 @@ void display(void)
 	}
 	else{
 
-	glLoadIdentity();
+	lightProject();
 	glEnable(GL_DEPTH_TEST);
 
-	glDisable(GL_TEXTURE);
 	focusOnLights();
 	//First Pass (shadows)
 	glClearColor(0, 0, 0, 0);
 	glBindFramebuffer(GL_FRAMEBUFFER, shadowFBO);
 	glClear( GL_DEPTH_BUFFER_BIT );
-	glOrtho(-20, 20, -20, 20, -10, 50);
-	gluLookAt(lightPos[0] + vehicle.getX(), lightPos[1] + vehicle.getY(), lightPos[2] + vehicle.getZ(), vehicle.getX(), vehicle.getY(), vehicle.getZ(), 0, 1, 0);
 	glUseProgram(shaderProgram1);
+	cameraProject();
 	updateMatrices();
-	glPushMatrix();
-	glScalef(20, 1, 20);
 	updateMatrices();
 	levelplain.draw();
-	glPopMatrix();
 	updateMatrices();
 	gms[3].draw();	
-	vehicle.draw();
+	for (int i; i <3; i ++){
+		clist[i].draw(true);
+	}
+	vehicle.draw(true);
 
 
 	//Retain the basic light transformations, for the shadow pass
-	glLoadIdentity();
-	glOrtho(-20, 20, -20, 20, -10, 50);
-	gluLookAt(lightPos[0] + vehicle.getX(), lightPos[1] + vehicle.getY(), lightPos[2] + vehicle.getZ(), vehicle.getX(), vehicle.getY(), vehicle.getZ(), 0, 1, 0);
+	lightProject();
 	updateMatrices();
 
 	glUseProgram(0);
 	//renderScene();// First Pass
 
-	focusOnShadows();
 	//Second pass
-	glLoadIdentity();
 	glBindFramebuffer(GL_FRAMEBUFFER, screenFBO);
-	glEnable(GL_TEXTURE);
 
 	glActiveTexture(GL_TEXTURE1);
 	glBindTexture(GL_TEXTURE_2D, shadowTexture);
@@ -277,40 +304,52 @@ void display(void)
 	glClearColor(0, 0, 0, 0);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-	gluPerspective(90, float(WINDOWX)/WINDOWY, 1, 240);
-	gluLookAt(camPos[0], camPos[1], camPos[2], vehicle.getX(), vehicle.getY(), vehicle.getZ(), 0, 1, 0);
 	//cam.updateView();
 
 
 	glUseProgram(shaderProgram2);
 
-	updateMatrices();
-	glPushMatrix();
-	glScalef(20, 1, 20);
-	updateMatrices();
+	lightProject();
+	cameraProject();
 	levelplain.draw();
-	glPopMatrix();
-	updateMatrices();
 	gms[3].draw();
-	glPopMatrix();
-	updateMatrices();
 	for (int i = 0; i < life; i ++){
-		glPushMatrix();
+
+		lightProject();
+		glTranslatef(vehicle.getTrailX(i), vehicle.getTrailY(i), vehicle.getTrailZ(i));
+		glScalef(2, 2, 2);
+		updateMatrices();
+
+		cameraProject();
 		glTranslatef(vehicle.getTrailX(i), vehicle.getTrailY(i), vehicle.getTrailZ(i));
 		glScalef(2, 2, 2);
 		updateMatrices();
 		gms[11].draw();
-		glPopMatrix();
 	}
 
-	vehicle.draw();
+	for (int i = 0; i <3; i ++){
+		lightProject();
+		clist[i].draw(false);
+		cameraProject();
+		clist[i].draw(true);
+	}
+
+	lightProject();
+	vehicle.draw(false);
+
+	cameraProject();
+	vehicle.draw(true);
 
 	glUseProgram(0);
 
 
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
+
+	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
 	gluOrtho2D(-1, 1, -1, 1);
+	glMatrixMode(GL_MODELVIEW);
+	glLoadIdentity();
 
 	glBindTexture(GL_TEXTURE_2D, screenTexture);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -345,6 +384,20 @@ void gameLoop(){
 	keyOperations();
 	vehicle.update();
 	updateCamera();
+	for (int i = 0; i <3; i ++){
+		clist[i].update();
+		if (clist[i].canBeCollected(vehicle.getX(), vehicle.getY(), vehicle.getZ())){
+			clist.erase(clist.begin() + i);
+			addCollectible();
+			life = maxLife;
+		}
+	}
+	life -= 0.1;
+	if (life < 0) {
+		vs.boot();
+		gamestate =GAMESTATE_VEHICLESELECT;
+	}
+
 }
 
 void FPSUpdate(int i){
@@ -353,6 +406,10 @@ void FPSUpdate(int i){
 
 	if (gamestate == GAMESTATE_VEHICLESELECT && vs.selected()){
 		gamestate = GAMESTATE_STARTED_GAME;
+		addCollectible();
+		addCollectible();
+		addCollectible();
+		life = maxLife;
 		std::string vname = vs.selectedVehicleName();
 		GameModel m = GameModel(vname);
 		if (vname == "car"){

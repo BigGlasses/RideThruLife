@@ -19,7 +19,7 @@ class Vehicle{
 		Vehicle();
 		Vehicle(float Inx, float Iny, float Inz, float acceleration, float turning, float brakes, float fuelEfficency, float Inscale, bool isBoat, GameModel Inmodel);
 		void update();
-		void draw();
+		void draw(bool render);
 		void accelerate(bool state);
 		void turn(bool direction);
 		void jump();

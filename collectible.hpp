@@ -12,6 +12,7 @@
 #include <fstream>
 
 #include "GameModel.hpp"
+#include "GameData.hpp"
 
 class Collectible{
 	public:
@@ -22,6 +23,7 @@ class Collectible{
 		float getX();
 		float getY();
 		float getZ();
+		float draw(bool render);
 		GameModel getModel();
 
 	private:

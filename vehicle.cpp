@@ -229,16 +229,16 @@ void Vehicle::update(){
 	}
 }
 
-void Vehicle::draw(){
+void Vehicle::draw(bool render){
 	glTranslatef(x, y, z);
 	glRotatef(rotation, 0, 1.0, 0);
 
 	if (abs(momentumZ) + abs(momentumY) + abs(momentumX) > 0){
 		float moment = sqrt(momentumZ*momentumZ + momentumX*momentumX + momentumY*momentumY);
 		glRotatef(-360*(momentumY/(5 + moment)), 1.0, 0, 0);
-		glRotatef(-60*(angularX)/(35 * moment), 0, 0, 1.0);
+		glRotatef(-60*(angularX)/(35 * (1 + moment)), 0, 0, 1.0);
 	}
 
 	updateMatrices();
-	model.draw();
+	if (render) model.draw();
 }

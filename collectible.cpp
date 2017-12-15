@@ -29,6 +29,16 @@ float Collectible::getY()
 {
 	return y;
 }
+float Collectible::draw(bool render)
+{
+	glPushMatrix();
+	glTranslatef(x, y, z);
+	glScalef(4, 4, 4);
+	glRotatef(lifeTime, 0, 1.0, 0);
+	updateMatrices();
+	if (render) model.draw();
+	glPopMatrix();
+}
 
 float Collectible::getZ()
 {
@@ -42,7 +52,7 @@ GameModel Collectible::getModel()
 
 bool Collectible::canBeCollected(float Inx, float Iny, float Inz)
 {
-	float threshold = 0.1;
+	float threshold = 10.0;
 	float dx = Inx - x;
 	float dy = Iny - y;
 	float dz = Inz - z;

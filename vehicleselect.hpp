@@ -26,6 +26,7 @@ class VehicleSelect{
 		void update();
 		void keyboard(unsigned char key, int xIn, int yIn);
 		bool selected();
+		void boot();
 		std::string selectedVehicleName();
 
 	private:

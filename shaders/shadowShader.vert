@@ -29,8 +29,10 @@ out float shiny;
 
 void main(){
 	Color = color;
- 	ShadowCoord = biasMatrix * pLightMatrix * mvLightMatrix * vec4(position, 1);
-    gl_Position = vec4( pMatrix * mvMatrix * vec4(position, 1));
+	vec4 worldPos = mvMatrix * vec4(position, 1);
+ 	ShadowCoord = biasMatrix * pLightMatrix * mvLightMatrix * worldPos	;
+    gl_Position = pMatrix * worldPos;
+   	//gl_Position = biasMatrix * pLightMatrix * mvLightMatrix * vec4(position, 1);
     pos = vec3(gl_Position);
     texCoord = textureCoord;
     normal = normalV;

@@ -19,6 +19,9 @@ void VehicleSelect::init(){
 	background = tl.loadTexture("vehicleselect.bmp");
 }
 
+void VehicleSelect::boot(){
+	finished = false;
+}
 void VehicleSelect::draw(){
 	glPushMatrix();
 	glLoadIdentity();
